@@ -39,16 +39,10 @@ public class SecurityConfiguration {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-//                                .requestMatchers(
-//                                        "/",                             // 루트
-//                                        "/h2-console/**",                // H2 콘솔
-//                                        "/auth/**",                      // 로그인, 회원가입 등 인증 없이 허용
-//                                        "/ws/**"                         // 웹소켓 허용
-//                                ).permitAll()
-//                                .anyRequest().authenticated()          // 나머지는 토큰 필요
-                                .requestMatchers(ApiPath.H2_PATH + "/**").permitAll()
-                                .requestMatchers(ApiPath.AUTH_PATH +"/register",ApiPath.AUTH_PATH +"/login",ApiPath.AUTH_PATH + "/refresh").permitAll() // 로그인, 토큰 재발급 허용
-                                .anyRequest().authenticated()
+                                .anyRequest().permitAll()
+//                                .requestMatchers(ApiPath.H2_PATH + "/**").permitAll()
+//                                .requestMatchers(ApiPath.AUTH_PATH +"/register",ApiPath.AUTH_PATH +"/login",ApiPath.AUTH_PATH + "/refresh").permitAll() // 로그인, 토큰 재발급 허용
+//                                .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
