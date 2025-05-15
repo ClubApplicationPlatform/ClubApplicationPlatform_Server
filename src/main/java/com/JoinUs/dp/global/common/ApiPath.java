@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ApiPath {
     public static final String API_ROOT = "/api/v1";
+    public static final String AUTH_PATH = API_ROOT + "/auth";
 
 
     // 도메인별 API_PATH 예시
