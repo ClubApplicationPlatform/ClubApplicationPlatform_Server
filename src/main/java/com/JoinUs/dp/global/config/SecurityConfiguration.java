@@ -1,5 +1,7 @@
 package com.JoinUs.dp.global.config;
 
+import com.JoinUs.dp.global.common.ApiPath;
+import com.JoinUs.dp.global.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,12 +15,15 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfiguration {
+
+    private final JwtAuthenticationFilter jwtFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -33,10 +38,22 @@ public class SecurityConfiguration {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeRequests ->
-                        authorizeRequests.anyRequest().permitAll()
+                        authorizeRequests
+//                                .requestMatchers(
+//                                        "/",                             // 루트
+//                                        "/h2-console/**",                // H2 콘솔
+//                                        "/auth/**",                      // 로그인, 회원가입 등 인증 없이 허용
+//                                        "/ws/**"                         // 웹소켓 허용
+//                                ).permitAll()
+//                                .anyRequest().authenticated()          // 나머지는 토큰 필요
+                                .requestMatchers(ApiPath.H2_PATH + "/**").permitAll()
+                                .requestMatchers(ApiPath.AUTH_PATH +"/register",ApiPath.AUTH_PATH +"/login",ApiPath.AUTH_PATH + "/refresh").permitAll() // 로그인, 토큰 재발급 허용
+                                .anyRequest().authenticated()
                 )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
+
+        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
