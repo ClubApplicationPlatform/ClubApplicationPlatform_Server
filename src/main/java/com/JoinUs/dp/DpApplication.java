@@ -1,6 +1,6 @@
 package com.JoinUs.dp;
 
-// git 강의
+// git 강의 sdf
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
