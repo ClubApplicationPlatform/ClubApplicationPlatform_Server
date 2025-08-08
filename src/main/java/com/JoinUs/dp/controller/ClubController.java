@@ -16,12 +16,12 @@ public class ClubController {
         this.clubService = clubService;
     }
 
-    @GetMapping("/search")
+    @GetMapping
     public List<Club> searchClubs(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) Integer memberCount,
-            @RequestParam(required = false) Boolean recruiting
-    ) {
+            @RequestParam(required = false) Boolean recruiting) {
+
         return clubService.searchClubs(name, memberCount, recruiting);
     }
 }
