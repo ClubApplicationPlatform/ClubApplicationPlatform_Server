@@ -50,3 +50,5 @@ public class ClubQuestion {
         this.active = active;
     }
 }
+
+//ㅁㄴㅇ
