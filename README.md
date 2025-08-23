@@ -32,8 +32,9 @@ NoticeController.java → REST API 제공 (FAQ 목록 조회, 공지 상세 조�
 📌 부트스트랩
 DpApplication.java → Spring Boot 메인 실행 클래스.
 
-
-[END POINT 기능 정리]
+📌 END POINT 기능 정리 
+🔹 동아리 신청 (ClubApplicationController)
+기본 CRUD
 
 POST /api/applications
 → 신규 동아리 신청 등록
@@ -53,7 +54,24 @@ PUT /api/applications
 PATCH /api/applications/{applicationId}
 → 신청 정보 일부 수정
 
-FAQ 관련
+추가 기능
+
+GET /api/clubs/{clubId}/applications
+→ 특정 클럽의 신청자 목록 조회
+
+PATCH /api/applications/{applicationId}/result
+→ 합격 여부 설정 (result=pass|fail, message 포함, JSON Body 방식)
+
+PATCH /api/applications/{applicationId}/confirm
+→ 합격자 본인의 확정(confirm) / 철회(decline)
+
+PATCH /api/applications/{applicationId}/additional-offer
+→ 불합격자 추가 합격 통보 (FAILED → PASSED)
+
+GET /api/departments/{departmentId}/clubs
+→ 학과별 클럽 목록 조회
+
+🔹 공지 / FAQ (NoticeController)
 
 GET /api/notices
 → FAQ 목록 조회
