@@ -13,3 +13,15 @@ CREATE TABLE CLUB_QUESTION (
                                active INT DEFAULT 1,
                                FOREIGN KEY (club_id) REFERENCES CLUB(id)
 );
+
+
+
+CREATE TABLE users (
+                       id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                       username VARCHAR(50) NOT NULL UNIQUE,
+                       password VARCHAR(255) NOT NULL,
+                       name VARCHAR(100) NOT NULL,
+                       department VARCHAR(100) NOT NULL,
+                       grade INT NOT NULL,
+                       email VARCHAR(100) NOT NULL UNIQUE
+);

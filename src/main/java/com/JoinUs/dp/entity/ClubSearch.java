@@ -15,15 +15,31 @@ public class ClubSearch {
     private Boolean recruiting;
 
     // Getter / Setter
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public Integer getMemberCount() { return memberCount; }
-    public void setMemberCount(Integer memberCount) { this.memberCount = memberCount; }
+    public Integer getMemberCount() {
+        return memberCount;
+    }
+    public void setMemberCount(Integer memberCount) {
+        this.memberCount = memberCount;
+    }
 
-    public Boolean getRecruiting() { return recruiting; }
-    public void setRecruiting(Boolean recruiting) { this.recruiting = recruiting; }
+    public Boolean getRecruiting() {
+        return recruiting;
+    }
+    public void setRecruiting(Boolean recruiting) {
+        this.recruiting = recruiting;
+    }
 }
