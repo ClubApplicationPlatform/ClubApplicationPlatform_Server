@@ -2,6 +2,11 @@ spring:
   application:
     name: dp
 
+#  data:
+#    redis:
+#      host: redis
+#      port: 6379
+
   datasource:
     url: jdbc:h2:mem:test
     driver-class-name: org.h2.Driver
@@ -17,6 +22,19 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: your_email@gmail.com
+    password: your_app_password
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          timeout: 5000
 
 jwt:
   secret: 1234567890987654321JWTSECRET1234567890987654321
