@@ -53,7 +53,6 @@ public class LikedClubService {
     public boolean enableNotification(Long clubId) {
         return likedClubRepository.findById(clubId).map(club -> {
             club.setNotificationEnabled(true);
-            likedClubRepository.save(club);
             return true;
         }).orElse(false);
     }
