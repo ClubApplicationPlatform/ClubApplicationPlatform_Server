@@ -23,10 +23,7 @@ public class ClubApplicationService {
 
     // ✅ 잘못된 자기 주입 제거, Repository 주입으로 수정
     private final ClubApplicationRepository repository;
-    public ClubApplicationService(ClubApplicationRepository repository) {
-        this.repository = repository;
-    }
-
+   
     // -------------------- 기본 CRUD --------------------
 
     // @Transactional

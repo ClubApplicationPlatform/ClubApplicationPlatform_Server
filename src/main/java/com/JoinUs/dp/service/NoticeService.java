@@ -15,10 +15,7 @@ import java.util.List;
 public class NoticeService {
 
     private final NoticeRepository noticeRepository;
-    // ✅ 명시적 생성자 주입
-    public NoticeService(NoticeRepository noticeRepository) {
-        this.noticeRepository = noticeRepository;
-    }
+   
     // FAQ 목록
     public List<NoticeResponse> getFaqList() {
         return noticeRepository.findAllFaq().stream()

@@ -21,10 +21,7 @@ import org.springframework.web.bind.annotation.*;
 public class NoticeController {
 
     private final NoticeService noticeService; // ✅ new 금지, DI 받기
-    // ✅ 명시적 생성자 주입
-    public NoticeController(NoticeService noticeService) {
-        this.noticeService = noticeService;
-    }
+
 
     @GetMapping
     public ResponseEntity<Response<List<NoticeResponse>>> getFaqs() {

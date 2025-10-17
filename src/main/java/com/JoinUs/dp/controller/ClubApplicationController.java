@@ -21,9 +21,7 @@ public class ClubApplicationController {
 
     private final ClubApplicationService service;
 
-    public ClubApplicationController(ClubApplicationService service) {
-        this.service = service;
-    }
+ 
 
     // 동아리 신청 등록: POST /api/applications
     @PostMapping(ApiPath.APPLICATIONS)
