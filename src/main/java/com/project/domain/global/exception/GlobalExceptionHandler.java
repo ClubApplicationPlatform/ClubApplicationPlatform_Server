@@ -15,5 +15,4 @@ public class GlobalExceptionHandler {
                 .body(new Response<>(HttpStatus.NOT_FOUND, null, ex.getMessage()));
     }
 
-    // 다른 예외처리 추가 가능
 }

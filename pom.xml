@@ -39,6 +39,11 @@
             <version>8.0.0.Final</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
 
         <!-- Thymeleaf 템플릿 엔진 -->
         <dependency>

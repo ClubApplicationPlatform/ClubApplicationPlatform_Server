@@ -8,8 +8,8 @@ public class ApiPath {
     // Auth 관련 API 경로
     public static final String AUTH = API_BASE + "/auth";
 
-    // LikedClub 관련 API 경로
-    public static final String LIKED_CLUBS = API_BASE + "/liked-clubs";
+    // Wishlist 관련 API 경로 (LIKED_CLUBS -> WISHLISTS로 변경) << 요기 수정 사항
+    public static final String WISHLISTS = API_BASE + "/wishlists"; 
 
     // User 관련 API 경로
     public static final String USER = API_BASE + "/users";
