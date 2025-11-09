@@ -8,5 +8,5 @@ import java.util.List;
 public interface InterviewRepository extends JpaRepository<Interview, Long> {
     // clubId 로 모든 면접 회차 조회
     // 면접 회차 조회 및 면접 현황 조회 기능에 사용됨
-    List<Interview> findAllByClub_Id(Long clubId);
+    List<Interview> findAllByClubId(Long clubId);
 }

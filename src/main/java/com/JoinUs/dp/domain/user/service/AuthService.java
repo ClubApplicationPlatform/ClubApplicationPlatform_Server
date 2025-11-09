@@ -21,7 +21,8 @@ public class AuthService {
     private final JwtProvider jwtProvider;
 
     public TokenDto login(String email, String password) {
-        User user = userRepository.findById(email)
+        // [FIX] findById(email) → findByEmail(email)
+        User user = userRepository.findByEmail(email)                                  // [FIX]
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
@@ -37,7 +38,8 @@ public class AuthService {
     }
 
     public void register(RegisterDto dto) {
-        if (userRepository.existsById(dto.getEmail())) {
+        // [FIX] existsById(dto.getEmail()) → existsByEmail(dto.getEmail())
+        if (userRepository.existsByEmail(dto.getEmail())) {                            // [FIX]
             throw new RuntimeException("이미 존재하는 이메일입니다.");
         }
         User user = User.builder()

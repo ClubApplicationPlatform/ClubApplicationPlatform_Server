@@ -80,73 +80,73 @@ public class SetData implements CommandLineRunner {
         clubRepository.saveAll(clubs);
     }
 
-    private void InterviewDataSeeding(){
-        Club club = clubRepository.findById(1L).orElse(null);
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+//    private void InterviewDataSeeding(){
+//        Club club = clubRepository.findById(1L).orElse(null);
+//        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+//
+//        List<Interview> interviews = List.of(
+//                new Interview(
+//                        club,
+//                        LocalDateTime.parse("2025-10-11T13:00", fmt),
+//                        LocalDateTime.parse("2025-10-11T13:30", fmt),
+//                        "산학협동관 I208호",
+//                        3L
+//                ),
+//                new Interview(
+//                        club,
+//                        LocalDateTime.parse("2025-10-11T13:00", fmt),
+//                        LocalDateTime.parse("2025-10-11T13:30", fmt),
+//                        "산학협동관 I210호",
+//                        3L
+//                ),
+//                new Interview(
+//                        club,
+//                        LocalDateTime.parse("2025-10-11T13:30", fmt),
+//                        LocalDateTime.parse("2025-10-11T14:00", fmt),
+//                        "산학협동관 I208호",
+//                        3L
+//                )
+//        );
+//        interviewRepository.saveAll(interviews);
+//    }
 
-        List<Interview> interviews = List.of(
-                new Interview(
-                        club,
-                        LocalDateTime.parse("2025-10-11T13:00", fmt),
-                        LocalDateTime.parse("2025-10-11T13:30", fmt),
-                        "산학협동관 I208호",
-                        3L
-                ),
-                new Interview(
-                        club,
-                        LocalDateTime.parse("2025-10-11T13:00", fmt),
-                        LocalDateTime.parse("2025-10-11T13:30", fmt),
-                        "산학협동관 I210호",
-                        3L
-                ),
-                new Interview(
-                        club,
-                        LocalDateTime.parse("2025-10-11T13:30", fmt),
-                        LocalDateTime.parse("2025-10-11T14:00", fmt),
-                        "산학협동관 I208호",
-                        3L
-                )
-        );
-        interviewRepository.saveAll(interviews);
-    }
-
-
-    private void ApplyInterview(Long interviewId, List<String> userNameList) {
-        for (String userName : userNameList) {
-            User user = userRepository.findByUsername(userName);
-            String userEmail = user.getEmail();
-            interviewService.apply(interviewId, userEmail);
-        }
-    }
-
-    private void SetInterviewResult(List<String> userNameList, InterviewResultEnum status) {
-        for (String userName : userNameList) {
-            Applicant applicant = applicantRepository.findByUser_Username(userName);
-            applicant.setInterviewResult(status);
-            applicantRepository.save(applicant);
-        }
-    }
-
-    private void SetUserConfirmStatus(List<String> userNameList, InterviewConfirmedEnum status) {
-        for (String userName : userNameList) {
-            Applicant applicant = applicantRepository.findByUser_Username(userName);
-            applicant.setConfirmStatus(status);
-            applicantRepository.save(applicant);
-        }
-}
+//
+//    private void ApplyInterview(Long interviewId, List<String> userNameList) {
+//        for (String userName : userNameList) {
+//            User user = userRepository.findByUsername(userName);
+//            String userEmail = user.getEmail();
+//            interviewService.apply(interviewId, userEmail);
+//        }
+//    }
+//
+//    private void SetInterviewResult(List<String> userNameList, InterviewResultEnum status) {
+//        for (String userName : userNameList) {
+//            Applicant applicant = applicantRepository.findByUser_Username(userName);
+//            applicant.setInterviewResult(status);
+//            applicantRepository.save(applicant);
+//        }
+//    }
+//
+//    private void SetUserConfirmStatus(List<String> userNameList, InterviewConfirmedEnum status) {
+//        for (String userName : userNameList) {
+//            Applicant applicant = applicantRepository.findByUser_Username(userName);
+//            applicant.setConfirmStatus(status);
+//            applicantRepository.save(applicant);
+//        }
+//}
 
     public void run(String[] args){
         UserDataSeeding();
         ClubDataSeeding();
-        InterviewDataSeeding();
+//        InterviewDataSeeding();
 
-        ApplyInterview(1L, List.of("user1",  "user2", "user3"));
-        ApplyInterview(2L, List.of("user4", "user5"));
-        ApplyInterview(3L, List.of("user6", "user7"));
-
-        SetInterviewResult(List.of("user1", "user2", "user3", "user4"), InterviewResultEnum.PASSED);
-        SetInterviewResult(List.of("user5", "user6", "user7"), InterviewResultEnum.FAILED);
-        SetUserConfirmStatus(List.of("user1", "user2"), InterviewConfirmedEnum.CONFIRMED);
-        SetUserConfirmStatus(List.of("user3"), InterviewConfirmedEnum.DECLINED);
+//        ApplyInterview(1L, List.of("user1",  "user2", "user3"));
+//        ApplyInterview(2L, List.of("user4", "user5"));
+//        ApplyInterview(3L, List.of("user6", "user7"));
+//
+//        SetInterviewResult(List.of("user1", "user2", "user3", "user4"), InterviewResultEnum.PASSED);
+//        SetInterviewResult(List.of("user5", "user6", "user7"), InterviewResultEnum.FAILED);
+//        SetUserConfirmStatus(List.of("user1", "user2"), InterviewConfirmedEnum.CONFIRMED);
+//        SetUserConfirmStatus(List.of("user3"), InterviewConfirmedEnum.DECLINED);
     }
 }

@@ -10,6 +10,7 @@ import com.JoinUs.dp.domain.interview.service.InterviewService;
 import com.JoinUs.dp.global.common.ApiPath;
 import com.JoinUs.dp.global.dto.Response;
 import com.JoinUs.dp.global.utility.JwtProvider;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class InterviewController {
     private final JwtProvider jwtProvider;
 
     // 1) 면접 회차 생성
+    @Operation(summary = "면접 회차 생성")
     @PostMapping(ApiPath.CLUB_INTERVIEWS)
     public ResponseEntity<Response<InterviewResponseDto>> create(
             @PathVariable Long clubId,
@@ -41,6 +43,7 @@ public class InterviewController {
     }
 
     // 2) 면접 회차 조회
+    @Operation(summary = "면접 회차 조회")
     @GetMapping(ApiPath.CLUB_INTERVIEWS)
     public ResponseEntity<Response<CheckInterviewResponseDto>> check(@PathVariable Long clubId) {
         return ResponseEntity.ok(
@@ -68,6 +71,8 @@ public class InterviewController {
         return authorization.substring(7); // "Bearer " 제거
     }
 
+    // 3) 면접 신청
+    @Operation(summary = "면접 신청")
     @SecurityRequirement(name = "bearerAuth")
     @PostMapping("/interviews/{interviewId}/apply")
     public void apply(@PathVariable Long interviewId, HttpServletRequest request) {
@@ -90,6 +95,7 @@ public class InterviewController {
 
 
     // 4) 신청자 면접 현황 조회
+    @Operation(summary = "신청자 면접 현황 조회")
     @GetMapping(ApiPath.CLUB_INTERVIEW_APPS)
     public ResponseEntity<Response<CheckDetailedInterviewResponseDto>> checkDetailed(@PathVariable Long clubId) {
         return ResponseEntity.ok(
@@ -102,6 +108,7 @@ public class InterviewController {
     }
 
     // 5) 미확정/가입거절 인원 조회
+    @Operation(summary = "미확정/가입거절 인원 조회")
     @GetMapping(ApiPath.CLUB_VACANCIES)
     public ResponseEntity<Response<UnconfirmedUserResponseDto>> checkUnconfirmedUser(@PathVariable Long clubId) {
         return ResponseEntity.ok(

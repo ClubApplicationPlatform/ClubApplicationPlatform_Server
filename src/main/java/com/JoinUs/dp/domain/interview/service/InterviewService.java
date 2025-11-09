@@ -44,7 +44,7 @@ public class InterviewService {
 
         // 시작 시간이 종료 시간보다 늦은 시간으로 주어졌을 때 에러 발생
         // 예시) startAt: 10:00, endAt: 9:00 -> 에러
-        if (req.startAt().isAfter(req.endAt())) {
+        if (req.startTime().isAfter(req.endTime())) {
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT,
                     "잘못된 시간 설정"
@@ -55,11 +55,12 @@ public class InterviewService {
         // 시간과 장소가 겹칠때 에러 발생
         List<Interview> interviews = interviewRepository.findAll();
         for (Interview interview : interviews) {
-            if (req.startAt().isBefore(interview.getEndAt()) && req.endAt().isAfter(interview.getStartAt())) {
+            if (req.startTime().isBefore(interview.getEndTime()) && req.endTime().isAfter(interview.getStartTime())) {
                 if (interview.getLocation().equals(req.location())) {
+                    Club creatingInterviewClub = clubRepository.findById(interview.getClubId()).orElseThrow();
                     throw new ResponseStatusException(
                             HttpStatus.CONFLICT,
-                            "(요청: " + club.getName() + ", 비교: " + interview.getClub().getName() + ") 면접 시간, 장소 겹침"
+                            "(요청: " + club.getName() + ", 비교: " + creatingInterviewClub.getName() + ") 면접 시간, 장소 겹침"
                     );
                 }
             }
@@ -67,11 +68,13 @@ public class InterviewService {
 
         // 면접 회차 생성
         Interview createdInterview = new Interview(
-                club,
-                req.startAt(),
-                req.endAt(),
-                req.location(),
-                req.capacity()
+                clubId,
+                req.date(),
+                req.startTime(),
+                req.endTime(),
+                req.duration(),
+                req.maxApplicants(),
+                req.location()
         );
 
         // 생성된 면접 회차 저장
@@ -94,7 +97,7 @@ public class InterviewService {
                 );
 
         // clubId 동아리 내의 모든 면접 회차 조회
-        List<Interview> interviews = interviewRepository.findAllByClub_Id(clubId);
+        List<Interview> interviews = interviewRepository.findAllByClubId(clubId);
         // InterviewEntity (entity) -> InterviewResponseDto (dto) 로 변환
         List<InterviewResponseDto> interviewsResponse = interviews.stream()
                 .map(interviewEntity -> {
@@ -122,7 +125,7 @@ public class InterviewService {
 //        String email = jwtProvider.extractEmail(token);
 
         // 이메일로 유저 조회
-         User user = userRepository.findById(email)
+         User user = userRepository.findByEmail(email)
              .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "email: " + email + " 를 찾을 수 없음"));
 
         // 면접 회차 조회
@@ -130,20 +133,21 @@ public class InterviewService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "interviewId: " + interviewId + " 를 찾을 수 없음"));
 
         // 중복 신청 체크
-        if (applicantRepository.existsByUser_EmailAndInterview_Club_Id(user.getEmail(), interview.getClub().getId())) {
+        if (applicantRepository.existsByUserIdAndClubId(user.getId(), interview.getClubId())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "동일 club 중복 신청");
         }
 
         // 정원 체크
-        if (interview.getApplied() >= interview.getCapacity()) {
+        if (interview.getApplied() >= interview.getMaxApplicants()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "신청 인원 초과");
         }
 
         // 카운트 증가 및 저장
         interview.increaseApplied();
         applicantRepository.save(new Applicant(
-                interview,
-                user
+                user.getId(),
+                interviewId,
+                interview.getClubId()
         ));
     }
 
@@ -159,18 +163,19 @@ public class InterviewService {
                 );
 
         // clubId 동아리 내의 모든 면접 회차 조회
-        List<Interview> interviews = interviewRepository.findAllByClub_Id(clubId);
+        List<Interview> interviews = interviewRepository.findAllByClubId(clubId);
 
         // 각 회차별로 해당 회차별 신청자 정보까지 합친 Dto 구성
         List<DetailedInterviewResponseDto> detailedInterviewResponse = interviews.stream()
                 .map(interviewEntity -> {
-                    List<Applicant> applicants = applicantRepository.findAllByInterview_Id(interviewEntity.getId());
+                    List<Applicant> applicants = applicantRepository.findAllByInterviewId(interviewEntity.getId());
                     return new DetailedInterviewResponseDto(
                             interviewEntity.getId(),
-                            interviewEntity.getStartAt(),
-                            interviewEntity.getEndAt(),
+                            interviewEntity.getDate(),
+                            interviewEntity.getStartTime(),
+                            interviewEntity.getEndTime(),
                             interviewEntity.getLocation(),
-                            interviewEntity.getCapacity(),
+                            interviewEntity.getMaxApplicants(),
                             interviewEntity.getApplied(),
                             ApplicantResponseDto.fromList(applicants)
                     );
@@ -198,10 +203,10 @@ public class InterviewService {
                 );
 
         // clubId 동아리에 신청한 신청자들의 수 카운팅
-        Long applicantCount = applicantRepository.countByInterview_Club_Id(clubId);
+        Long applicantCount = applicantRepository.countByClubId(clubId);
 
         // confirmStatus 가 아직 기본값인 PENDING(대기) 인 유저들의 수 카운팅
-        Long pendingUserCount = applicantRepository.countByInterview_Club_IdAndInterviewResultAndConfirmStatus(
+        Long pendingUserCount = applicantRepository.countByClubIdAndInterviewResultAndConfirmStatus(
                 clubId,
                 InterviewResultEnum.FAILED,
                 InterviewConfirmedEnum.PENDING
@@ -210,7 +215,7 @@ public class InterviewService {
         // confirmStatus 가 아직 기본값인 PENDING(대기) 상태인 유저들을 찾은 후
         // 면접신청 유저 entity 리스트 -> 면접신청 유저 dto 리스트 로 변환
         List<ApplicantResponseDto> pendingUsers = ApplicantResponseDto.fromList(
-                applicantRepository.findAllByInterview_Club_IdAndInterviewResultAndConfirmStatus(
+                applicantRepository.findAllByClubIdAndInterviewResultAndConfirmStatus(
                         clubId,
                         InterviewResultEnum.FAILED,
                         InterviewConfirmedEnum.PENDING
