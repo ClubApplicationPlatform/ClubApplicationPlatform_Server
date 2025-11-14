@@ -1,10 +1,10 @@
-package com.project.domain.auth.service;
+package com.project.domain.wishlist.service;
 
-import com.project.domain.auth.dto.WishlistRequest;
-import com.project.domain.auth.entity.Wishlist; 
-import com.project.domain.auth.repository.WishlistRepository; 
-import com.project.domain.stubs.Club;
-import com.project.domain.stubs.User; 
+import com.project.domain.wishlist.dto.WishlistRequest;
+import com.project.domain.wishlist.entity.Wishlist;
+import com.project.domain.wishlist.repository.WishlistRepository;
+import com.project.domain.club.entity.*;
+import com.project.domain.user.entity.*; 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,7 @@ public class WishlistService {
     private User findUserById(Long userId) {
         return new User(userId); 
     }
-
+    
     private Club findClubById(Long clubId) {
         if (clubId == 999L) {
              throw new EntityNotFoundException("Club not found with id " + clubId);

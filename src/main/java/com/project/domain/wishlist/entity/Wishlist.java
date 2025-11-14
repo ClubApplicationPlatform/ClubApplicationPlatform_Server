@@ -1,4 +1,4 @@
-package com.project.domain.auth.entity;
+package com.project.domain.wishlist.entity;
 
 import com.project.domain.club.entity.Club;
 import com.project.domain.user.entity.User;

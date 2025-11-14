@@ -1,12 +1,12 @@
-package com.project.domain.auth.controller;
-
+package com.project.domain.wishlist.controller;
+import com.project.domain.club.entity.*;
 import com.project.domain.global.constant.ApiPath;
 import com.project.domain.global.dto.Response;
-import com.project.domain.auth.dto.WishlistRequest; 
-import com.project.domain.auth.dto.WishlistResponse; 
-import com.project.domain.auth.entity.Wishlist;
-import com.project.domain.auth.service.WishlistService; 
-import com.project.domain.stubs.Club; 
+import com.project.domain.wishlist.dto.WishlistRequest;
+import com.project.domain.wishlist.dto.WishlistResponse;
+import com.project.domain.wishlist.entity.Wishlist;
+import com.project.domain.wishlist.service.WishlistService;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

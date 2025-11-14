@@ -1,4 +1,4 @@
-package com.project.domain.auth.dto;
+package com.project.domain.wishlist.dto;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;

@@ -1,9 +1,10 @@
-package com.project.domain.auth.repository;
+package com.project.domain.wishlist.repository;
 
-import com.project.domain.auth.entity.Wishlist;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import com.project.domain.wishlist.entity.Wishlist;
 
 import java.util.List;
 import java.util.Optional;

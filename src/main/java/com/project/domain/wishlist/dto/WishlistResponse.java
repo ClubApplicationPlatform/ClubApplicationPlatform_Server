@@ -1,6 +1,7 @@
-package com.project.domain.auth.dto;
+package com.project.domain.wishlist.dto;
 
-import com.project.domain.stubs.Club;
+import com.project.domain.club.entity.Club;
+
 import lombok.Getter;
 
 @Getter

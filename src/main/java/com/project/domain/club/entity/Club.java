@@ -1,4 +1,4 @@
-package com.project.domain.stubs;
+package com.project.domain.club.entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class Club {
     @Id
     private Long id;
@@ -17,11 +18,5 @@ public class Club {
     private String category;
     private String department;
 
-    public Club(Long id, String name, String type, String category, String department) {
-        this.id = id;
-        this.name = name;
-        this.type = type;
-        this.category = category;
-        this.department = department;
-    }
+    
 }
