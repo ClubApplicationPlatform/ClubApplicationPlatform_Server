@@ -1,9 +1,8 @@
 package com.JoinUs.dp.controller;
 
 import com.JoinUs.dp.entity.ClubSearch;
-import com.JoinUs.dp.entity.User; // 사용자 엔티티 필요
-import com.JoinUs.dp.repository.ClubSearchRepository;
-import com.JoinUs.dp.repository.UserRepository;
+import com.JoinUs.dp.entity.User;
+import com.JoinUs.dp.service.ClubAdminService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -12,56 +11,38 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/clubs/admin")
-public class AdminController {
+public class ClubAdminController {
 
-    private final ClubRepository clubRepository;
-    private final UserRepository userRepository;
+    private final ClubAdminService clubAdminService;
 
-    public AdminController(ClubRepository clubRepository, UserRepository userRepository) {
-        this.clubRepository = clubRepository;
-        this.userRepository = userRepository;
+    public ClubAdminController(ClubAdminService clubAdminService) {
+        this.clubAdminService = clubAdminService;
     }
 
-    /**
-     * 📊 대시보드 조회 (전체 사용자 수, 동아리 수)
-     */
+    /** 📊 대시보드 */
     @GetMapping("/dashboard")
     public Map<String, Long> getDashboard() {
-        long userCount = userRepository.count();
-        long clubCount = clubRepository.count();
-
-        Map<String, Long> dashboard = new HashMap<>();
-        dashboard.put("userCount", userCount);
-        dashboard.put("clubCount", clubCount);
-
-        return dashboard;
+        Map<String, Long> result = new HashMap<>();
+        result.put("userCount", clubAdminService.getUserCount());
+        result.put("clubCount", clubAdminService.getClubCount());
+        return result;
     }
 
-    /**
-     * 📋 동아리 목록 조회
-     */
+    /** 📋 동아리 목록 */
     @GetMapping("/clubs")
     public List<ClubSearch> getAllClubs() {
-        return clubRepository.findAll();
+        return clubAdminService.getAllClubs();
     }
 
-    /**
-     * 👥 사용자 목록 조회
-     */
+    /** 👥 사용자 목록 */
     @GetMapping("/users")
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<User> getUsers() {
+        return clubAdminService.getAllUsers();
     }
 
-    /**
-     * ✅ 동아리 승인 (approve 상태 true로 변경)
-     */
+    /** ✅ 동아리 승인 */
     @PatchMapping("/clubs/{clubId}/approve")
-    public ClubSearch approveClub(@PathVariable Long clubId) {
-        ClubSearch club = clubRepository.findById(clubId)
-                .orElseThrow(() -> new RuntimeException("클럽을 찾을 수 없습니다."));
-
-        club.setRecruiting(true); // 예시: recruiting 필드를 true로 바꿔 승인 처리
-        return clubRepository.save(club);
+    public boolean approveClub(@PathVariable Long clubId) {
+        return clubAdminService.approveClub(clubId);
     }
 }
