@@ -1,4 +1,3 @@
-// src/main/java/com/JoinUs/dp/global/domain/application/dto/ClubApplicationDto.java
 package com.JoinUs.dp.dto;
 
 import java.time.LocalDate;
@@ -42,7 +41,6 @@ public class ClubApplicationDto {
         );
     }
 
-    // getters/setters
     public Long getId() { return id; }
     public Long getClubId() { return clubId; }
     public Long getDepartmentId() { return departmentId; }

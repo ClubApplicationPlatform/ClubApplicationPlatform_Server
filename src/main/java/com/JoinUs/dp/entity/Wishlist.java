@@ -7,7 +7,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
-@Table(name = "wishlist", uniqueConstraints = {
+@Table(name = "Wishlist", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"user_id", "club_id"}) 
 })
 @Getter
