@@ -1,4 +1,4 @@
-package com.project.domain.global.dto;
+package com.JoinUs.dp.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;

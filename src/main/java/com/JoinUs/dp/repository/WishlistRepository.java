@@ -1,10 +1,10 @@
-package com.project.domain.wishlist.repository;
+package com.JoinUs.dp.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.project.domain.wishlist.entity.Wishlist;
+import com.JoinUs.dp.entity.Wishlist;
 
 import java.util.List;
 import java.util.Optional;

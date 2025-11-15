@@ -1,7 +1,5 @@
-package com.project.domain.wishlist.entity;
+package com.JoinUs.dp.entity;
 
-import com.project.domain.club.entity.Club;
-import com.project.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;

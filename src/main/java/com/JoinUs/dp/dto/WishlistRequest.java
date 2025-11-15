@@ -1,4 +1,4 @@
-package com.project.domain.wishlist.dto;
+package com.JoinUs.dp.dto;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;

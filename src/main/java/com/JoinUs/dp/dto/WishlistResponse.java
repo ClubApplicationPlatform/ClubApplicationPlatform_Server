@@ -1,6 +1,6 @@
-package com.project.domain.wishlist.dto;
+package com.JoinUs.dp.dto;
 
-import com.project.domain.club.entity.Club;
+import com.JoinUs.dp.entity.Club;
 
 import lombok.Getter;
 

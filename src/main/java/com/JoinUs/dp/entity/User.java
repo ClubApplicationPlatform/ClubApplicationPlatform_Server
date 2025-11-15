@@ -1,4 +1,4 @@
-package com.project.domain.user.entity;
+package com.JoinUs.dp.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

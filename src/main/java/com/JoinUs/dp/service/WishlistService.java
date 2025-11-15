@@ -1,8 +1,10 @@
-package com.project.domain.wishlist.service;
+package com.JoinUs.dp.service;
 
-import com.project.domain.wishlist.dto.WishlistRequest;
-import com.project.domain.wishlist.entity.Wishlist;
-import com.project.domain.wishlist.repository.WishlistRepository;
+import com.JoinUs.dp.dto.WishlistRequest;
+import com.JoinUs.dp.entity.Club;
+import com.JoinUs.dp.entity.User;
+import com.JoinUs.dp.entity.Wishlist;
+import com.JoinUs.dp.repository.WishlistRepository;
 import com.project.domain.club.entity.*;
 import com.project.domain.user.entity.*; 
 import jakarta.persistence.EntityNotFoundException;

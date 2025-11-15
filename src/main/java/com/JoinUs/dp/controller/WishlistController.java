@@ -1,11 +1,12 @@
-package com.project.domain.wishlist.controller;
+package com.JoinUs.dp.controller;
+import com.JoinUs.dp.dto.Response;
+import com.JoinUs.dp.dto.WishlistRequest;
+import com.JoinUs.dp.dto.WishlistResponse;
+import com.JoinUs.dp.entity.Club;
+import com.JoinUs.dp.entity.Wishlist;
+import com.JoinUs.dp.service.WishlistService;
 import com.project.domain.club.entity.*;
 import com.project.domain.global.constant.ApiPath;
-import com.project.domain.global.dto.Response;
-import com.project.domain.wishlist.dto.WishlistRequest;
-import com.project.domain.wishlist.dto.WishlistResponse;
-import com.project.domain.wishlist.entity.Wishlist;
-import com.project.domain.wishlist.service.WishlistService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
+import com.JoinUs.dp.common.api.*;
 @RestController
 @RequestMapping(ApiPath.WISHLISTS) 
 @RequiredArgsConstructor
