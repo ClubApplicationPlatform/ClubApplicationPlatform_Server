@@ -1,8 +1,10 @@
 package com.JoinUs.dp.repository;
 
-import com.JoinUs.dp.entity.ClubSearch;
-import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.JoinUs.dp.entity.ClubSearch;
 
 public interface ClubSearchRepository extends JpaRepository<ClubSearch, Long> {
 

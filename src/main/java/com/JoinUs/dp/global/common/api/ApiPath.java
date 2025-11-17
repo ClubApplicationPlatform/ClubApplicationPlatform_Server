@@ -1,5 +1,5 @@
 // src/main/java/com/JoinUs/dp/global/common/api/ApiPath.java
-package com.JoinUs.dp.common.api;
+package com.JoinUs.dp.global.common.api;
 
 public final class ApiPath {
     private ApiPath() {}

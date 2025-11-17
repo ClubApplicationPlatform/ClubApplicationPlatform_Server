@@ -1,11 +1,13 @@
 package com.JoinUs.dp.service;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.JoinUs.dp.entity.ClubSearch;
 import com.JoinUs.dp.entity.User;
 import com.JoinUs.dp.repository.ClubSearchRepository;
 import com.JoinUs.dp.repository.UserRepository;
-import org.springframework.stereotype.Service;
-import java.util.List;
 
 @Service
 public class ClubAdminService {

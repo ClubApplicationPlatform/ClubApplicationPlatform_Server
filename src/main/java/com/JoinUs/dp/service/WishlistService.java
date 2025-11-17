@@ -1,5 +1,10 @@
 package com.JoinUs.dp.service;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.JoinUs.dp.entity.Club;
 import com.JoinUs.dp.entity.User;
 import com.JoinUs.dp.entity.Wishlist;
@@ -9,10 +14,6 @@ import com.JoinUs.dp.repository.WishlistRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +34,7 @@ public class WishlistService {
         Long userId = getCurrentUserId();
 
         // 이미 찜했는지 체크
-        if (wishlistRepository.existsByUserIdAndClubId(userId, clubId)) {
+        if (wishlistRepository.existsByUserIdAndClubClubId(userId, clubId)) {
             throw new IllegalArgumentException("이미 찜한 동아리입니다.");
         }
 
@@ -52,7 +53,7 @@ public class WishlistService {
     public void unlikeClub(Long clubId) {
         Long userId = getCurrentUserId();
 
-        Wishlist wishlist = wishlistRepository.findByUserIdAndClubId(userId, clubId)
+        Wishlist wishlist = wishlistRepository.findByUserIdAndClubClubId(userId, clubId)
                 .orElseThrow(() ->
                         new EntityNotFoundException("찜 기록을 찾을 수 없습니다. (Club ID: " + clubId + ")")
                 );

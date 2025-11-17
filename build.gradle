@@ -36,9 +36,7 @@ dependencies {
     /* ===========================
         Database
     ============================ */
-    runtimeOnly 'com.mysql:mysql-connector-j'     // MySQL 정식 드라이버
-    runtimeOnly 'com.h2database:h2'               // 개발/test용 H2
-
+implementation 'com.mysql:mysql-connector-j'     // MySQL 정식 드라이버
     /* ===========================
         Lombok
     ============================ */

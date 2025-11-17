@@ -2,7 +2,13 @@
 package com.JoinUs.dp.repository;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
@@ -61,6 +67,7 @@ public class ClubApplicationRepository {
     public Optional<ClubApplication> findById(Long id) {
         return Optional.ofNullable(storage.get(id));
     }
+    List<Applications> findByUserId(Long userId);
 
     public List<ClubApplication> findAll() {
         return new ArrayList<>(storage.values());

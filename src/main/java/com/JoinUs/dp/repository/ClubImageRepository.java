@@ -1,0 +1,10 @@
+package com.JoinUs.dp.repository;
+
+import com.JoinUs.dp.entity.ClubImage;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+public interface ClubImageRepository extends JpaRepository<ClubImage, Long> {
+    List<ClubImage> findByClub_ClubId(Long clubId);
+}

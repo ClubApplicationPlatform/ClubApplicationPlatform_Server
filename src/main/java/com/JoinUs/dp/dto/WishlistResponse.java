@@ -13,7 +13,7 @@ public class WishlistResponse {
     private String department;
 
     public WishlistResponse(Club club) {
-        this.clubId = club.getId();
+        this.clubId = club.getClubId();
         this.name = club.getName();
         this.type = club.getType();
         this.category = club.getCategory();

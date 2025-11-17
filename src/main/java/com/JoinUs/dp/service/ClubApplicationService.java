@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 // import org.springframework.transaction.annotation.Transactional; // ← 트랜잭션이 필요하면 주석 해제
 
 import com.JoinUs.dp.common.exception.NotFoundException;
+import com.JoinUs.dp.dto.ClubApplicationDto;
 import com.JoinUs.dp.dto.ClubSummary;
 import com.JoinUs.dp.entity.ClubApplication;
-import com.JoinUs.dp.dto.ClubApplicationDto;
 import com.JoinUs.dp.entity.ClubStatus;
 import com.JoinUs.dp.repository.ClubApplicationRepository;
 

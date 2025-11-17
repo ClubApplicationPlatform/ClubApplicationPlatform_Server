@@ -4,13 +4,21 @@ package com.JoinUs.dp.controller;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.http.*;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.JoinUs.dp.common.api.ApiPath;
 import com.JoinUs.dp.common.response.Response;
 import com.JoinUs.dp.dto.ClubApplicationDto;
 import com.JoinUs.dp.dto.ClubSummary;
+import com.JoinUs.dp.global.common.api.ApiPath;
 import com.JoinUs.dp.service.ClubApplicationService;
 
 import lombok.RequiredArgsConstructor;

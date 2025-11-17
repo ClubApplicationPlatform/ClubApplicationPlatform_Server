@@ -1,14 +1,15 @@
 package com.JoinUs.dp.service;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.JoinUs.dp.common.exception.NotFoundException;
 import com.JoinUs.dp.dto.NoticeResponse;
 import com.JoinUs.dp.entity.Notice;
 import com.JoinUs.dp.repository.NoticeRepository;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

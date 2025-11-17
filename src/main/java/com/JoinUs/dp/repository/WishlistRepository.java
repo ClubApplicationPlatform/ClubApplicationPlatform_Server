@@ -1,17 +1,18 @@
 package com.JoinUs.dp.repository;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.JoinUs.dp.entity.Wishlist;
 
-import java.util.List;
-import java.util.Optional;
-
 public interface WishlistRepository extends JpaRepository<Wishlist, Long> {
 
-    Optional<Wishlist> findByUserIdAndClubId(Long userId, Long clubId);
+    // 💡 수정됨: Club 엔티티의 ID 필드 이름인 'ClubId'를 반영
+    Optional<Wishlist> findByUserIdAndClubClubId(Long userId, Long clubId);
     
     @Query("SELECT w FROM Wishlist w JOIN FETCH w.club WHERE w.user.id = :userId AND (:type IS NULL OR w.club.type = :type)")
     List<Wishlist> findByUserIdAndClubType(@Param("userId") Long userId, @Param("type") String type);
@@ -22,5 +23,6 @@ public interface WishlistRepository extends JpaRepository<Wishlist, Long> {
     @Query("SELECT w FROM Wishlist w JOIN FETCH w.club WHERE w.user.id = :userId AND w.club.type = 'major' AND w.club.department = :department")
     List<Wishlist> findMajorByUserIdAndDepartment(@Param("userId") Long userId, @Param("department") String department);
 
-    boolean existsByUserIdAndClubId(Long userId, Long clubId);
+    // 💡 수정됨: Club 엔티티의 ID 필드 이름인 'ClubId'를 반영
+    boolean existsByUserIdAndClubClubId(Long userId, Long clubId);
 }
