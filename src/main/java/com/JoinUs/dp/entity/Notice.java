@@ -1,39 +1,48 @@
 package com.JoinUs.dp.entity;
 
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "Notices")
+@Getter
+@NoArgsConstructor
 public class Notice {
+
     public enum Type {
-        FAQ, CLUB_NOTICE
+        FAQ,
+        CLUB_NOTICE
     }
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "notice_id")
     private Long id;
-    private Long clubId;              // 클럽 공지일 때만 세팅 (FAQ는 null)
+
+    @Column(name = "club_id")
+    private Long clubId;
+
+    @Column(nullable = false)
     private String title;
+
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
+
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Type type;
 
-    public Notice(Long id, Long clubId, String title, String content, LocalDateTime createdAt, Type type) {
-        this.id = id;
+    public Notice(Long clubId, String title, String content, Type type) {
         this.clubId = clubId;
         this.title = title;
         this.content = content;
-        this.createdAt = createdAt;
+        this.createdAt = LocalDateTime.now();
         this.type = type;
     }
-
-    public Long getId() { return id; }
-    public Long getClubId() { return clubId; }
-    public String getTitle() { return title; }
-    public String getContent() { return content; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public Type getType() { return type; }
-
-    public void setId(Long id) { this.id = id; }
-    public void setClubId(Long clubId) { this.clubId = clubId; }
-    public void setTitle(String title) { this.title = title; }
-    public void setContent(String content) { this.content = content; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
-    public void setType(Type type) { this.type = type; }
 }

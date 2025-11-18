@@ -1,10 +1,6 @@
 package com.JoinUs.dp.service;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
+import com.JoinUs.dp.dto.WishlistResponse;
 import com.JoinUs.dp.entity.Club;
 import com.JoinUs.dp.entity.User;
 import com.JoinUs.dp.entity.Wishlist;
@@ -12,8 +8,10 @@ import com.JoinUs.dp.repository.ClubRepository;
 import com.JoinUs.dp.repository.UserRepository;
 import com.JoinUs.dp.repository.WishlistRepository;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -23,59 +21,77 @@ public class WishlistService {
     private final UserRepository userRepository;
     private final ClubRepository clubRepository;
 
-    /** 현재 로그인 유저 ID (임시) */
-    private Long getCurrentUserId() {
-        return 1L; // 로그인 구현 전 임시
-    }
+    /** 찜 추가 */
+    public WishlistResponse addWishlist(Long userId, Long clubId) {
 
-    /** ❤️ 찜 추가 */
-    @Transactional
-    public Wishlist likeClub(Long clubId) {
-        Long userId = getCurrentUserId();
-
-        // 이미 찜했는지 체크
         if (wishlistRepository.existsByUserIdAndClubClubId(userId, clubId)) {
-            throw new IllegalArgumentException("이미 찜한 동아리입니다.");
+            throw new RuntimeException("이미 찜한 동아리입니다.");
         }
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("유저를 찾을 수 없습니다."));
-
+                .orElseThrow(() -> new RuntimeException("유저 없음"));
         Club club = clubRepository.findById(clubId)
-                .orElseThrow(() -> new EntityNotFoundException("동아리를 찾을 수 없습니다."));
+                .orElseThrow(() -> new RuntimeException("동아리 없음"));
 
-        Wishlist wishlist = new Wishlist(user, club);
-        return wishlistRepository.save(wishlist);
+        Wishlist wish = new Wishlist(user, club);
+        wishlistRepository.save(wish);
+
+        return new WishlistResponse(
+                club.getClubId(),
+                club.getName(),
+                club.getType(),
+                club.getCategory(),
+                club.getDepartment()
+        );
     }
 
-    /** 💔 찜 삭제 */
-    @Transactional
-    public void unlikeClub(Long clubId) {
-        Long userId = getCurrentUserId();
+    /** 찜 삭제 */
+    public void deleteWishlist(Long userId, Long clubId) {
+        Wishlist wish = wishlistRepository.findByUserIdAndClubClubId(userId, clubId)
+                .orElseThrow(() -> new RuntimeException("찜한 동아리 없음"));
 
-        Wishlist wishlist = wishlistRepository.findByUserIdAndClubClubId(userId, clubId)
-                .orElseThrow(() ->
-                        new EntityNotFoundException("찜 기록을 찾을 수 없습니다. (Club ID: " + clubId + ")")
-                );
-
-        wishlistRepository.delete(wishlist);
+        wishlistRepository.delete(wish);
     }
 
-    /** 📋 전체 조회 (type optional) */
-    public List<Wishlist> getAllWishlists(String type) {
-        Long userId = getCurrentUserId();
-        return wishlistRepository.findByUserIdAndClubType(userId, type);
+    /** 전체 조회 (type 필터 optional) */
+    public List<WishlistResponse> getWishlist(Long userId, String type) {
+
+        return wishlistRepository.findByUserIdAndClubType(userId, type).stream()
+                .map(w -> new WishlistResponse(
+                        w.getClub().getClubId(),
+                        w.getClub().getName(),
+                        w.getClub().getType(),
+                        w.getClub().getCategory(),
+                        w.getClub().getDepartment()
+                ))
+                .toList();
     }
 
-    /** 📁 일반 동아리 */
-    public List<Wishlist> getGeneralByCategory(String category) {
-        Long userId = getCurrentUserId();
-        return wishlistRepository.findGeneralByUserIdAndCategory(userId, category);
+    /** 일반동아리 카테고리별 */
+    public List<WishlistResponse> getGeneralByCategory(Long userId, String category) {
+
+        return wishlistRepository.findGeneralByUserIdAndCategory(userId, category).stream()
+                .map(w -> new WishlistResponse(
+                        w.getClub().getClubId(),
+                        w.getClub().getName(),
+                        w.getClub().getType(),
+                        w.getClub().getCategory(),
+                        w.getClub().getDepartment()
+                ))
+                .toList();
     }
 
-    /** 🎓 전공 동아리 */
-    public List<Wishlist> getMajorByDepartment(String department) {
-        Long userId = getCurrentUserId();
-        return wishlistRepository.findMajorByUserIdAndDepartment(userId, department);
+    /** 전공동아리 학과별 */
+    public List<WishlistResponse> getMajorByDepartment(Long userId, String department) {
+
+        return wishlistRepository.findMajorByUserIdAndDepartment(userId, department).stream()
+                .map(w -> new WishlistResponse(
+                        w.getClub().getClubId(),
+                        w.getClub().getName(),
+                        w.getClub().getType(),
+                        w.getClub().getCategory(),
+                        w.getClub().getDepartment()
+                ))
+                .toList();
     }
 }

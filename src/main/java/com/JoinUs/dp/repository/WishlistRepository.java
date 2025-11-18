@@ -11,18 +11,46 @@ import com.JoinUs.dp.entity.Wishlist;
 
 public interface WishlistRepository extends JpaRepository<Wishlist, Long> {
 
-    // 💡 수정됨: Club 엔티티의 ID 필드 이름인 'ClubId'를 반영
+    // 단일 찜 여부 확인
     Optional<Wishlist> findByUserIdAndClubClubId(Long userId, Long clubId);
-    
-    @Query("SELECT w FROM Wishlist w JOIN FETCH w.club WHERE w.user.id = :userId AND (:type IS NULL OR w.club.type = :type)")
-    List<Wishlist> findByUserIdAndClubType(@Param("userId") Long userId, @Param("type") String type);
-    
-    @Query("SELECT w FROM Wishlist w JOIN FETCH w.club WHERE w.user.id = :userId AND w.club.type = 'general' AND w.club.category = :category")
-    List<Wishlist> findGeneralByUserIdAndCategory(@Param("userId") Long userId, @Param("category") String category);
-    
-    @Query("SELECT w FROM Wishlist w JOIN FETCH w.club WHERE w.user.id = :userId AND w.club.type = 'major' AND w.club.department = :department")
-    List<Wishlist> findMajorByUserIdAndDepartment(@Param("userId") Long userId, @Param("department") String department);
 
-    // 💡 수정됨: Club 엔티티의 ID 필드 이름인 'ClubId'를 반영
     boolean existsByUserIdAndClubClubId(Long userId, Long clubId);
+
+    // 전체 조회 + 타입 필터링 (type이 null이면 전체)
+    @Query("""
+        SELECT w
+        FROM Wishlist w
+        JOIN FETCH w.club
+        WHERE w.user.id = :userId
+          AND (:type IS NULL OR w.club.type = :type)
+    """)
+    List<Wishlist> findByUserIdAndClubType(
+            @Param("userId") Long userId,
+            @Param("type") String type);
+
+    // 일반동아리 카테고리별
+    @Query("""
+        SELECT w
+        FROM Wishlist w
+        JOIN FETCH w.club
+        WHERE w.user.id = :userId
+          AND w.club.type = 'general'
+          AND w.club.category = :category
+    """)
+    List<Wishlist> findGeneralByUserIdAndCategory(
+            @Param("userId") Long userId,
+            @Param("category") String category);
+
+    // 전공동아리 학과별
+    @Query("""
+        SELECT w
+        FROM Wishlist w
+        JOIN FETCH w.club
+        WHERE w.user.id = :userId
+          AND w.club.type = 'major'
+          AND w.club.department = :department
+    """)
+    List<Wishlist> findMajorByUserIdAndDepartment(
+            @Param("userId") Long userId,
+            @Param("department") String department);
 }

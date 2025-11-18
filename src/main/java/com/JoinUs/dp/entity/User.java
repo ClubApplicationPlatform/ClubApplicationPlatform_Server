@@ -30,7 +30,7 @@ public class User {
     @Column(nullable = false)
     private String nickname;
     @Column(nullable = false)
-    private int grade;
+    private Integer grade;
 
     @Column(nullable = false)
     private String department;

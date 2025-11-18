@@ -30,4 +30,11 @@ public final class ApiPath {
     public static final String POST = API_BASE + "/posts";
 
     // 그 외 필요한 경로 추가 가능
+    public static final String USER_ME = "/api/users/me";  
+    public static final String USER_APPLICATIONS = "/api/applications/mine";
+    public static final String WISHLIST = "/api/wishlist";
+    public static final String WISHLIST_GENERAL_CATEGORY = "/api/wishlist/general/{category}";
+    public static final String WISHLIST_MAJOR_DEPARTMENT = "/api/wishlist/major/{department}";
+
+
 }

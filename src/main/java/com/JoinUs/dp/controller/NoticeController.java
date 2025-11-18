@@ -1,49 +1,67 @@
-// src/main/java/com/JoinUs/dp/global/domain/notice/controller/NoticeController.java
 package com.JoinUs.dp.controller;
 
-import java.util.List;
+import com.JoinUs.dp.common.response.Response;
+import com.JoinUs.dp.entity.Notice;
+import com.JoinUs.dp.service.NoticeService;
+import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.JoinUs.dp.common.response.Response;
-import com.JoinUs.dp.dto.NoticeCreateRequest;
-import com.JoinUs.dp.dto.NoticeResponse;
-import com.JoinUs.dp.global.common.api.ApiPath;
-import com.JoinUs.dp.service.NoticeService;
-
-import lombok.RequiredArgsConstructor;
+import java.util.List;
 
 @RestController
-@RequestMapping(ApiPath.NOTICE_PATH)
 @RequiredArgsConstructor
 public class NoticeController {
 
-    private final NoticeService noticeService; // ✅ new 금지, DI 받기
+    private final NoticeService noticeService;
 
-
-    @GetMapping
-    public ResponseEntity<Response<List<NoticeResponse>>> getFaqs() {
-        List<NoticeResponse> list = noticeService.getFaqList();
-        return ResponseEntity.ok(new Response<>(HttpStatus.OK.value(), list, "FAQ 목록 조회 성공"));
+    // FAQ 조회
+    @GetMapping("/api/notices")
+    public ResponseEntity<Response<List<Notice>>> getFaqList() {
+        List<Notice> list = noticeService.getFaqList();
+        return ResponseEntity.ok(
+                new Response<>(HttpStatus.OK.value(), list, "FAQ 조회 성공")
+        );
     }
 
-    @GetMapping("/{noticeId}")
-    public ResponseEntity<Response<NoticeResponse>> getDetail(@PathVariable("noticeId") Long noticeId) {
-        NoticeResponse dto = noticeService.getNoticeDetail(noticeId);
-        return ResponseEntity.ok(new Response<>(HttpStatus.OK.value(), dto, "공지 상세 조회 성공"));
-    }
-    // ✅ FAQ 등록 (중복 경로 제거)
-    @PostMapping
-    public ResponseEntity<Response<NoticeResponse>> createFaq(@RequestBody NoticeCreateRequest req) {
-        NoticeResponse saved = noticeService.createFaq(req.getTitle(), req.getContent());
-        return ResponseEntity.ok(new Response<>(HttpStatus.OK.value(), saved, "FAQ 등록 성공"));
+    // 공지 상세 조회
+    @GetMapping("/api/notices/{noticeId}")
+    public ResponseEntity<Response<Notice>> getNotice(@PathVariable Long noticeId) {
+        Notice notice = noticeService.getNotice(noticeId);
+        return ResponseEntity.ok(
+                new Response<>(HttpStatus.OK.value(), notice, "공지 상세 조회 성공")
+        );
     }
 
+    // 특정 동아리 공지 조회
+    @GetMapping("/api/clubs/{clubId}/notice")
+    public ResponseEntity<Response<List<Notice>>> getClubNotices(@PathVariable Long clubId) {
+        List<Notice> list = noticeService.getClubNotices(clubId);
+        return ResponseEntity.ok(
+                new Response<>(HttpStatus.OK.value(), list, "동아리 공지 목록 조회 성공")
+        );
+    }
+
+    // 클럽 공지 작성
+    @PostMapping("/api/clubs/{clubId}/notice")
+    public ResponseEntity<Response<Notice>> createClubNotice(
+            @PathVariable Long clubId,
+            @RequestBody Notice req
+    ) {
+        Notice saved = noticeService.createClubNotice(clubId, req.getTitle(), req.getContent());
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new Response<>(HttpStatus.CREATED.value(), saved, "동아리 공지 등록 성공"));
+    }
+
+    // FAQ 등록(관리자)
+    @PostMapping("/api/notices")
+    public ResponseEntity<Response<Notice>> createFaq(
+            @RequestBody Notice req
+    ) {
+        Notice saved = noticeService.createFaq(req.getTitle(), req.getContent());
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new Response<>(HttpStatus.CREATED.value(), saved, "FAQ 등록 성공"));
+    }
 }

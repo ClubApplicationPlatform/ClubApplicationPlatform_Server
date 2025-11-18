@@ -1,22 +1,15 @@
 package com.JoinUs.dp.dto;
 
-import com.JoinUs.dp.entity.Club;
-
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public class WishlistResponse {
-    private Long clubId; 
-    private String name;
-    private String type; 
-    private String category;
-    private String department;
 
-    public WishlistResponse(Club club) {
-        this.clubId = club.getClubId();
-        this.name = club.getName();
-        this.type = club.getType();
-        this.category = club.getCategory();
-        this.department = club.getDepartment();
-    }
+    private Long clubId;
+    private String clubName;
+    private String type;        // general / major
+    private String category;    // 일반동아리 카테고리
+    private String department;  // 전공동아리 학과
 }

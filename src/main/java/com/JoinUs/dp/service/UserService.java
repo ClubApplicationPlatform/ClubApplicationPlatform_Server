@@ -1,13 +1,15 @@
 package com.JoinUs.dp.service;
 
-import com.JoinUs.dp.dto.MyApplicationResponse;
+import com.JoinUs.dp.dto.ApplicationResponse;
 import com.JoinUs.dp.dto.UserResponse;
 import com.JoinUs.dp.dto.UserUpdateRequest;
-import com.JoinUs.dp.entity.Applications;
+import com.JoinUs.dp.entity.Application;
+import com.JoinUs.dp.entity.Club;
 import com.JoinUs.dp.entity.User;
-import com.JoinUs.dp.repository.ApplicationsRepository;
+import com.JoinUs.dp.repository.ApplicationRepository;
 import com.JoinUs.dp.repository.ClubRepository;
 import com.JoinUs.dp.repository.UserRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,15 +21,17 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final ApplicationsRepository applicationsRepository;
+    private final ApplicationRepository applicationRepository;
     private final ClubRepository clubRepository;
 
+    /** 내 정보 조회 */
     public UserResponse getMyInfo(Long userId) {
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         return new UserResponse(
-                user.getUserId(),
+                user.getId(),
                 user.getEmail(),
                 user.getUsername(),
                 user.getNickname(),
@@ -39,7 +43,9 @@ public class UserService {
         );
     }
 
+    /** 내 정보 수정 */
     public UserResponse updateMyInfo(Long userId, UserUpdateRequest req) {
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -50,7 +56,7 @@ public class UserService {
         userRepository.save(user);
 
         return new UserResponse(
-                user.getUserId(),
+                user.getId(),
                 user.getEmail(),
                 user.getUsername(),
                 user.getNickname(),
@@ -62,22 +68,27 @@ public class UserService {
         );
     }
 
-    public List<MyApplicationResponse> getMyApplications(Long userId) {
-        List<Applications> apps = applicationsRepository.findByUserId(userId);
+    /** 내 신청 목록 조회 */
+    public List<ApplicationResponse> getMyApplications(Long userId) {
 
-        return apps.stream().map(app -> {
-            String clubName = clubRepository.findById(app.getClubId())
-                    .map(club -> club.getName())
-                    .orElse("Unknown");
+        List<Application> apps = applicationRepository.findByUserId(userId);
 
-            return new MyApplicationResponse(
-                    app.getApplicationId(),
-                    app.getClubId(),
-                    clubName,
-                    app.getResult(),
-                    app.getConfirmStatus(),
-                    app.getCreatedAt()
-            );
-        }).collect(Collectors.toList());
+        return apps.stream()
+                .map(app -> {
+
+                    String clubName = clubRepository.findById(app.getClubId())
+                            .map(Club::getName)
+                            .orElse("Unknown");
+
+                    return new ApplicationResponse(
+                            app.getId(),
+                            app.getClubId(),
+                            clubName,
+                            app.getStatus(),     // ✔ 단일 enum
+                            app.getMessage(),    // ✔ 설명 메시지
+                            app.getCreatedAt()
+                    );
+                })
+                .collect(Collectors.toList());
     }
 }
