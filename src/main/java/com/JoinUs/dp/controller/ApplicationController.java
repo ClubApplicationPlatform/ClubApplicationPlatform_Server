@@ -113,8 +113,8 @@ public class ApplicationController {
 
     /** 학과별 클럽 목록 (옵션) */
     @GetMapping(ApiPath.DEPARTMENT_CLUBS)
-    public ResponseEntity<Response<List<ClubSummary>>> findByDept(@PathVariable Long departmentId) {
-        List<ClubSummary> list = service.getClubsByDepartment(departmentId);
+    public ResponseEntity<Response<List<ClubSummary>>> findByDept(@PathVariable String  department) {
+        List<ClubSummary> list = service.getClubsByDepartment(department);
         return ResponseEntity.ok(new Response<>(200, list, "학과별 클럽 목록 조회 성공"));
     }
 }

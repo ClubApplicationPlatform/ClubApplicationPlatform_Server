@@ -28,12 +28,12 @@ public class ClubController {
     @GetMapping
     public ResponseEntity<?> getClubs(
             @RequestParam(required = false) String type,
-            @RequestParam(required = false) String category,
-            @RequestParam(required = false) String department
+            @RequestParam(required = false) String category
+//            @RequestParam(required = false) Long department
     ) {
         if (type == null) return ResponseEntity.ok(clubService.findAllClubs());
         if (type != null && category != null) return ResponseEntity.ok(clubService.findByTypeAndCategory(type, category));
-        if (type != null && department != null) return ResponseEntity.ok(clubService.findByDepartment(department));
+//        if (type != null && department != null) return ResponseEntity.ok(clubService.findByDepartment(department));
         return ResponseEntity.ok(clubService.findByType(type));
     }
 
