@@ -185,7 +185,7 @@ public class ApplicationService {
     }
 
     /* ===========================
-       11. 학과별 클럽 조회 (옵션)
+       11. 학과별 동아리 조회 (옵션)
        =========================== */
     public List<ClubSummary> getClubsByDepartment(String department) {
         return clubRepository.findByDepartment(department)

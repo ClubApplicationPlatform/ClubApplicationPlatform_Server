@@ -1,51 +1,52 @@
 package com.JoinUs.dp.service;
 
+import com.JoinUs.dp.entity.Club;
+import com.JoinUs.dp.entity.User;
+import com.JoinUs.dp.repository.ClubRepository;
+import com.JoinUs.dp.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
-import org.springframework.stereotype.Service;
-
-import com.JoinUs.dp.entity.ClubSearch;
-import com.JoinUs.dp.entity.User;
-import com.JoinUs.dp.repository.ClubSearchRepository;
-import com.JoinUs.dp.repository.UserRepository;
-
 @Service
+@RequiredArgsConstructor
 public class ClubAdminService {
 
-    private final ClubSearchRepository clubSearchRepository;
+    private final ClubRepository clubRepository;
     private final UserRepository userRepository;
 
-    public ClubAdminService(ClubSearchRepository clubSearchRepository, UserRepository userRepository) {
-        this.clubSearchRepository = clubSearchRepository;
-        this.userRepository = userRepository;
-    }
-
-    /** 전체 대시보드 데이터 (유저 수 / 동아리 수) */
+    /** 📊 대시보드 (user + club count) */
     public long getUserCount() {
         return userRepository.count();
     }
 
     public long getClubCount() {
-        return clubSearchRepository.count();
+        return clubRepository.count(); // ✅ Clubs 테이블 기준 집계
     }
 
-    /** 동아리 전체 조회 */
-    public List<ClubSearch> getAllClubs() {
-        return clubSearchRepository.findAll();
+    /** 📋 동아리 전체 목록 */
+    public List<Club> getAllClubs() {
+        return clubRepository.findAll(); // ✅ Clubs 테이블 데이터 반환
     }
 
-    /** 사용자 전체 조회 */
+    /** 👥 사용자 전체 목록 */
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
-    /** 동아리 승인 처리 */
+    /** ✅ 동아리 승인 처리 */
+    @Transactional
     public boolean approveClub(Long clubId) {
-        return clubSearchRepository.findById(clubId)
+        return clubRepository.findById(clubId)
                 .map(club -> {
-                    club.setRecruiting(true);  // 승인 처리 = recruiting true
-                    clubSearchRepository.save(club);
-                    return true;
+                    if (!"approved".equals(club.getStatus())) {
+                        club.setStatus("approved");
+                        clubRepository.saveAndFlush(club);
+                        return true;
+                    }
+                    return false;
                 })
                 .orElse(false);
     }

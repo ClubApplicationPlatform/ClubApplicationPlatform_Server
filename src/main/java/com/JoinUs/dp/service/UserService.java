@@ -1,5 +1,6 @@
 package com.JoinUs.dp.service;
 
+import com.JoinUs.dp.dto.ApplicationDto;
 import com.JoinUs.dp.dto.ApplicationResponse;
 import com.JoinUs.dp.dto.UserResponse;
 import com.JoinUs.dp.dto.UserUpdateRequest;
@@ -67,6 +68,9 @@ public class UserService {
                 user.getGrade()
         );
     }
+    public User createUser(User user) {
+        return userRepository.save(user);
+    }
 
     /** 내 신청 목록 조회 */
     public List<ApplicationResponse> getMyApplications(Long userId) {
@@ -75,20 +79,23 @@ public class UserService {
 
         return apps.stream()
                 .map(app -> {
-
                     String clubName = clubRepository.findById(app.getClubId())
                             .map(Club::getName)
                             .orElse("Unknown");
 
+                    // 👉 여기서 ApplicationDto를 먼저 만든다
+                    ApplicationDto dto = ApplicationDto.from(app);
+
                     return new ApplicationResponse(
-                            app.getId(),
-                            app.getClubId(),
+                            dto.getApplicationId(),
+                            dto.getClubId(),
                             clubName,
-                            app.getStatus(),     // ✔ 단일 enum
-                            app.getMessage(),    // ✔ 설명 메시지
-                            app.getCreatedAt()
+                            dto.getStatus(),
+                            dto.getMessage(),
+                            dto.getCreatedAt()      // ✔ createdAt 정상 출력됨
                     );
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
+
 }

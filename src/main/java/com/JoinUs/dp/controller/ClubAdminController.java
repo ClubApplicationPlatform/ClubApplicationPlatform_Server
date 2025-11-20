@@ -1,6 +1,6 @@
 package com.JoinUs.dp.controller;
 
-import com.JoinUs.dp.entity.ClubSearch;
+import com.JoinUs.dp.entity.Club;
 import com.JoinUs.dp.entity.User;
 import com.JoinUs.dp.service.ClubAdminService;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +30,7 @@ public class ClubAdminController {
 
     /** 📋 동아리 목록 */
     @GetMapping("/clubs")
-    public List<ClubSearch> getAllClubs() {
+    public List<Club> getAllClubs() { // ✅ Club 타입으로 반환
         return clubAdminService.getAllClubs();
     }
 

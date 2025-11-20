@@ -10,6 +10,7 @@ import com.JoinUs.dp.entity.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
+
     // username으로 유저 찾기
     Optional<User> findByUsername(String username);
 

@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "Clubs")
+@Table(name = "clubs")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -58,4 +58,9 @@ public class Club {
 
     @Column(name = "leader_id", nullable = false)
     private Long leaderId;
+    @Column(name = "member_count")
+    private Integer memberCount;
+
+    @Column(name = "recruiting")
+    private Boolean recruiting;
 }

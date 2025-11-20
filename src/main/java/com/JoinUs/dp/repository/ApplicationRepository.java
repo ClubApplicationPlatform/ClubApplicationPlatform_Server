@@ -12,6 +12,6 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
     List<Application> findByUserId(Long userId);
 
     List<Application> findByClubId(Long clubId);
-    List<Club> findByDepartment(String department);
+//    List<Club> findByDepartment(String department);
 
 }
