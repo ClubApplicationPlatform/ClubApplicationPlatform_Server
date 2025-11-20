@@ -53,20 +53,22 @@ public class WishlistController {
     /** 일반동아리 카테고리별 */
     @GetMapping(ApiPath.WISHLIST_GENERAL_CATEGORY)
     public ResponseEntity<Response<List<WishlistResponse>>> getGeneralByCategory(
-            @RequestParam Long userId,
-            @PathVariable String category
+            @RequestParam("userId") Long userId,
+            @PathVariable("category") String category  // ✅ 여기에도 명시
     ) {
         List<WishlistResponse> list = wishlistService.getGeneralByCategory(userId, category);
         return ResponseEntity.ok(new Response<>(200, list, "일반동아리 카테고리별 찜 목록 조회 성공"));
     }
 
+
     /** 전공동아리 학과별 */
     @GetMapping(ApiPath.WISHLIST_MAJOR_DEPARTMENT)
     public ResponseEntity<Response<List<WishlistResponse>>> getMajorByDept(
-            @RequestParam Long userId,
-            @PathVariable String department
+            @RequestParam("userId") Long userId,
+            @PathVariable("department") String department  // ✅ 명시적 바인딩
     ) {
         List<WishlistResponse> list = wishlistService.getMajorByDepartment(userId, department);
         return ResponseEntity.ok(new Response<>(200, list, "전공동아리 학과별 찜 목록 조회 성공"));
     }
+
 }

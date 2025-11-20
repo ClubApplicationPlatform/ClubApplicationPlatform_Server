@@ -3,6 +3,7 @@ package com.JoinUs.dp.controller;
 import com.JoinUs.dp.common.response.Response;
 import com.JoinUs.dp.dto.InterviewRequest;
 import com.JoinUs.dp.dto.InterviewResponse;
+import com.JoinUs.dp.dto.StatusRequest;
 import com.JoinUs.dp.service.InterviewService;
 
 import lombok.RequiredArgsConstructor;
@@ -73,10 +74,11 @@ public class InterviewController {
     @PatchMapping("/api/interviews/{id}/status")
     public ResponseEntity<Response<InterviewResponse>> changeStatus(
             @PathVariable Long id,
-            @RequestBody String status
+            @RequestBody StatusRequest req
     ) {
         return ResponseEntity.ok(
-                new Response<>(200, interviewService.changeStatus(id, status), "면접 상태 변경 완료")
+                new Response<>(200, interviewService.changeStatus(id, req.getStatus()), "면접 상태 변경 완료")
         );
     }
+
 }

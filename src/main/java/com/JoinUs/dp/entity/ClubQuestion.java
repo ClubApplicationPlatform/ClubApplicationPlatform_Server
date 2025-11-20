@@ -17,8 +17,9 @@ public class ClubQuestion {
     private Long qid;  // id → qid
 
     @ManyToOne
-    @JoinColumn(name = "club_id")
+    @JoinColumn(name = "club_id", referencedColumnName = "club_id")
     private ClubSearch club;
+
 
     private String question;
     private String answer;
