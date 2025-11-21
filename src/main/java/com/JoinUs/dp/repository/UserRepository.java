@@ -11,6 +11,9 @@ import com.JoinUs.dp.entity.User;
 public interface UserRepository extends JpaRepository<User, Long> {
 
 
+    // ✅ 이메일 존재 여부
+    boolean existsByEmail(String email);
+
     // username으로 유저 찾기
     Optional<User> findByUsername(String username);
 

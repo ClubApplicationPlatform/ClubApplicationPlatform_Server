@@ -1,40 +1,65 @@
-// src/main/java/com/JoinUs/dp/global/common/api/ApiPath.java
 package com.JoinUs.dp.global.common.api;
 
-public final class ApiPath {
-    private ApiPath() {}
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
-    // 공지/FAQ
-    public static final String NOTICE_PATH = "/api/notices";
-    public static final String CLUB_NOTICE_PATH = "/api/clubs/{clubId}/notice";
+/**
+ * 전역 API 경로 및 설정 상수 관리 클래스
+ */
+@Component
+public class ApiPath {
 
-    // ✅ 동아리 신청
-    public static final String APPLICATIONS = "/api/applications";
-    public static final String CLUB_APPLICATIONS = "/api/clubs/{clubId}/applications";
-    public static final String DEPARTMENT_CLUBS = "/api/departments/{departmentId}/clubs";
-    
-    
-    // 공통 API 기본 경로
-    public static final String API_BASE = "/api";
+    // ==========================
+    // 🔹 공통 API 경로
+    // ==========================
+    public static final String API_ROOT = "/api";
+    public static final String API_V1 = API_ROOT + "/v1";
 
-    // Auth 관련 API 경로
-    public static final String AUTH = API_BASE + "/auth";
+    // ==========================
+    // 🔹 인증 / 사용자
+    // ==========================
+    public static final String AUTH_PATH = API_V1 + "/auth";
+    public static final String USER_PATH = API_V1 + "/users";
+    public static final String USER_ME = USER_PATH + "/me";
+    public static final String USER_APPLICATIONS = API_V1 + "/applications/mine";
 
-    // Wishlist 관련 API 경로 (LIKED_CLUBS -> WISHLISTS로 변경) << 요기 수정 사항
-    public static final String WISHLISTS = API_BASE + "/wishlists"; 
+    // ==========================
+    // 🔹 공지사항 / FAQ
+    // ==========================
+    public static final String NOTICE_PATH = API_V1 + "/notices";
+    public static final String CLUB_NOTICE_PATH = API_V1 + "/clubs/{clubId}/notice";
 
-    // User 관련 API 경로
-    public static final String USER = API_BASE + "/users";
+    // ==========================
+    // 🔹 동아리 관련
+    // ==========================
+    public static final String APPLICATIONS = API_V1 + "/applications";
+    public static final String CLUB_APPLICATIONS = API_V1 + "/clubs/{clubId}/applications";
+    public static final String DEPARTMENT_CLUBS = API_V1 + "/departments/{departmentId}/clubs";
 
-    // Post 관련 API 경로
-    public static final String POST = API_BASE + "/posts";
+    // ==========================
+    // 🔹 위시리스트 (찜)
+    // ==========================
+    public static final String WISHLIST = API_V1 + "/wishlist";
+    public static final String WISHLISTS = API_V1 + "/wishlists"; // 복수형 (신규)
+    public static final String WISHLIST_GENERAL_CATEGORY = WISHLIST + "/general/{category}";
+    public static final String WISHLIST_MAJOR_DEPARTMENT = WISHLIST + "/major/{department}";
 
-    // 그 외 필요한 경로 추가 가능
-    public static final String USER_ME = "/api/users/me";  
-    public static final String USER_APPLICATIONS = "/api/applications/mine";
-    public static final String WISHLIST = "/api/wishlist";
-    public static final String WISHLIST_GENERAL_CATEGORY = "/api/wishlist/general/{category}";
-    public static final String WISHLIST_MAJOR_DEPARTMENT = "/api/wishlist/major/{department}";
+    // ==========================
+    // 🔹 게시글 / 기타
+    // ==========================
+    public static final String POST_PATH = API_V1 + "/posts";
 
+    // ==========================
+    // 🔹 H2 콘솔 (환경 설정)
+    // ==========================
+    public static String H2_PATH;
 
+    @Value("${spring.h2.console.path:/h2-console}")
+    private String h2Path;
+
+    @PostConstruct
+    public void init() {
+        H2_PATH = h2Path;
+    }
 }

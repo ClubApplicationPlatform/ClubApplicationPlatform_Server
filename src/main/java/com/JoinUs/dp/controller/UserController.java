@@ -48,7 +48,7 @@ public class UserController {
     }
 
     /** 🔥 회원 생성(POST) */
-    @PostMapping(ApiPath.USER)   // "/api/users"
+    @PostMapping(ApiPath.USER_PATH)    // "/api/users"
     public ResponseEntity<Response<UserResponse>> createUser(@RequestBody User newUser) {
 
         User saved = userService.createUser(newUser);
