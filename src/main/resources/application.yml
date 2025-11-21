@@ -17,7 +17,8 @@ spring:
 # 🧩 JWT 공통 설정 (협업자 내용 포함)
 # ================================
 jwt:
-  secret: 1234567890987654321JWTSECRET1234567890987654321
+  secret: ${JWT_SECRET}
+#  secret: 1234567890987654321JWTSECRET1234567890987654321
 # ================================
 # 🧩 DEV (MySQL - 당신 환경)
 # ================================
@@ -28,9 +29,10 @@ spring:
       on-profile: dev
 
   datasource:
-    url: jdbc:mysql://localhost:3306/club?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    username: root
-    password: 2428
+    # URL과 비밀번호는 Environment Variable로 대체됨
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME:root} # 환경 변수가 없으면 root 사용
+    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   h2:
@@ -51,7 +53,12 @@ spring:
     driver-class-name: org.h2.Driver
     username: sa
     password:
-
+#jwt:
+#  secret: 1234567890987654321JWTSECRET1234567890987654321
+#  # ...
+#  datasource:
+#    url: jdbc:mysql://localhost:3306/club?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+#    password: 2428
   h2:
     console:
       enabled: true
