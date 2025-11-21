@@ -2,6 +2,50 @@ spring:
   application:
     name: dp
 
+  profiles:
+    active: dev   # 기본 실행환경을 'dev'로 설정 (mysql 사용)
+
+  # ================================
+  # 🧩 공통 설정 (모든 프로필 공용)
+  # ================================
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.MySQLDialect
+# ================================
+# 🧩 JWT 공통 설정 (협업자 내용 포함)
+# ================================
+jwt:
+  secret: 1234567890987654321JWTSECRET1234567890987654321
+# ================================
+# 🧩 DEV (MySQL - 당신 환경)
+# ================================
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/club?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: 2428
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  h2:
+    console:
+      enabled: false
+
+# ================================
+# 🧩 TEST (H2 - 협업자 환경)
+# ================================
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+
   datasource:
     url: jdbc:h2:mem:test
     driver-class-name: org.h2.Driver
@@ -13,7 +57,4 @@ spring:
       enabled: true
       path: /h2-console
 
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
+
