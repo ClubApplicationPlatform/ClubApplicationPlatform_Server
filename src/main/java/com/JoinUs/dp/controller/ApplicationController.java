@@ -1,14 +1,15 @@
-// src/main/java/com/JoinUs/dp/controller/ApplicationController.java
 package com.JoinUs.dp.controller;
 
 import java.util.List;
 import java.util.Map;
 
+import com.JoinUs.dp.common.exception.BadRequestException;
 import com.JoinUs.dp.common.response.Response;
 import com.JoinUs.dp.dto.ApplicationDto;
 import com.JoinUs.dp.dto.ClubSummary;
 import com.JoinUs.dp.global.common.api.ApiPath;
 import com.JoinUs.dp.service.ApplicationService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,29 +29,24 @@ public class ApplicationController {
                 .body(new Response<>(201, saved, "동아리 신청 등록 완료"));
     }
 
-    /**
-     * 신청 목록 조회
-     * - /api/v1/applications?userId=1  → 해당 유저 신청 목록
-     * - /api/v1/applications?clubId=2  → 해당 클럽 신청 목록
-     * - 둘 다 없으면 전체 목록 (관리자용)
-     */
+    /** 신청 목록 조회 - userId/clubId 중 하나는 필수 */
     @GetMapping(ApiPath.APPLICATIONS)
     public ResponseEntity<Response<List<ApplicationDto>>> findAll(
             @RequestParam(required = false) Long userId,
             @RequestParam(required = false) Long clubId
     ) {
-        List<ApplicationDto> list;
-        if (userId != null) {
-            list = service.findByUserId(userId);
-        } else if (clubId != null) {
-            list = service.findByClubId(clubId);
-        } else {
-            list = service.findAll();
+
+        if (userId == null && clubId == null) {
+            throw new BadRequestException("userId 또는 clubId는 반드시 포함해야 합니다.");
         }
+
+        List<ApplicationDto> list =
+                (userId != null) ? service.findByUserId(userId) : service.findByClubId(clubId);
+
         return ResponseEntity.ok(new Response<>(200, list, "신청 목록 조회 성공"));
     }
 
-    /** 단건 조회 */
+    /** 신청 상세 조회 */
     @GetMapping(ApiPath.APPLICATIONS + "/{applicationId}")
     public ResponseEntity<Response<ApplicationDto>> findById(@PathVariable Long applicationId) {
         ApplicationDto dto = service.findById(applicationId);
@@ -64,14 +60,14 @@ public class ApplicationController {
         return ResponseEntity.ok(new Response<>(200, null, "신청 취소 완료"));
     }
 
-    /** 전체 수정 */
+    /** 신청 전체 수정 */
     @PutMapping(ApiPath.APPLICATIONS)
     public ResponseEntity<Response<ApplicationDto>> update(@RequestBody ApplicationDto req) {
         ApplicationDto updated = service.update(req);
         return ResponseEntity.ok(new Response<>(200, updated, "신청 수정 완료"));
     }
 
-    /** 부분 수정 */
+    /** 신청 부분 수정 */
     @PatchMapping(ApiPath.APPLICATIONS + "/{applicationId}")
     public ResponseEntity<Response<ApplicationDto>> partialUpdate(
             @PathVariable Long applicationId,
@@ -81,14 +77,14 @@ public class ApplicationController {
         return ResponseEntity.ok(new Response<>(200, updated, "신청 부분 수정 완료"));
     }
 
-    /** 클럽별 신청 목록 (별도 path 사용) */
+    /** 클럽별 신청자 목록 조회 */
     @GetMapping(ApiPath.CLUB_APPLICATIONS)
     public ResponseEntity<Response<List<ApplicationDto>>> findByClubId(@PathVariable Long clubId) {
         List<ApplicationDto> list = service.findByClubId(clubId);
         return ResponseEntity.ok(new Response<>(200, list, "클럽별 신청자 목록 조회 성공"));
     }
 
-    /** 합격/불합격 설정 */
+    /** 결과 설정 */
     @PatchMapping(ApiPath.APPLICATIONS + "/{applicationId}/result")
     public ResponseEntity<Response<ApplicationDto>> setResult(
             @PathVariable Long applicationId,
@@ -124,7 +120,7 @@ public class ApplicationController {
         return ResponseEntity.ok(new Response<>(200, updated, "추가 합격 통보 완료"));
     }
 
-    /** 학과별 클럽 목록 (기존 서버 오류 수정) */
+    /** 학과별 클럽 조회 */
     @GetMapping(ApiPath.DEPARTMENT_CLUBS)
     public ResponseEntity<Response<List<ClubSummary>>> findByDept(
             @PathVariable("departmentId") String departmentId

@@ -10,9 +10,11 @@ import com.JoinUs.dp.entity.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-
-    // ✅ 이메일 존재 여부
+    // 이메일 중복 체크
     boolean existsByEmail(String email);
+
+    // ⭐ 학번(studentId) 중복 체크 (추가됨)
+    boolean existsByStudentId(String studentId);
 
     // username으로 유저 찾기
     Optional<User> findByUsername(String username);

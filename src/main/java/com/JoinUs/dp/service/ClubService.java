@@ -68,7 +68,7 @@ public class ClubService {
         return saved.getClubId();
     }
 
-    // 2. 단일 동아리 상세 조회
+    // 2. 단일 동아리 상세 조회 (기존 버전 - 필요하면 다른 곳에서 사용)
     public ClubDetailResponse getClubDetail(Long id) {
         Club club = clubRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("해당 clubId는 존재하지 않습니다."));
@@ -89,6 +89,16 @@ public class ClubService {
                 club.getRecruitStatus(),
                 images
         );
+    }
+
+    /**
+     * 2-1. 단일 동아리 상세 조회 (프론트용 구조 - ClubListResponse로 통일)
+     * - GET /api/clubs/{clubId} 에서 사용하는 메서드
+     */
+    public ClubListResponse getClubFull(Long id) {
+        Club club = clubRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("해당 clubId는 존재하지 않습니다."));
+        return toListResponse(club);
     }
 
     // 3. 전체 목록 조회 (프론트용 구조)
@@ -230,7 +240,6 @@ public class ClubService {
         String id = "sg" + String.format("%02d", club.getClubId());
 
         // 2) adminId: 지금은 임시로 고정 값
-        //    나중에 Users 테이블에서 leaderId 기반 username/email 가져오고 싶으면 여기서 매핑
         String adminId = "sg_lead";
 
         // 3) imageUrl: 대표 이미지 1개
@@ -243,9 +252,9 @@ public class ClubService {
         List<String> activities = club.getActivities() == null
                 ? Collections.emptyList()
                 : Arrays.stream(club.getActivities().split("\n"))
-                        .map(String::trim)
-                        .filter(s -> !s.isEmpty())
-                        .collect(Collectors.toList());
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.toList());
 
         // 5) direction: Club.vision
         String direction = club.getVision();

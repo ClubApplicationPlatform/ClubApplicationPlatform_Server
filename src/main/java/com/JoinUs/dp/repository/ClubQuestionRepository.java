@@ -1,12 +1,13 @@
 package com.JoinUs.dp.repository;
 
-import java.util.List;
-
+import com.JoinUs.dp.entity.Club;
+import com.JoinUs.dp.entity.ClubQuestion;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.JoinUs.dp.entity.ClubQuestion;
-import com.JoinUs.dp.entity.ClubSearch;
+import java.util.List;
 
 public interface ClubQuestionRepository extends JpaRepository<ClubQuestion, Long> {
-    List<ClubQuestion> findByClubAndActive(ClubSearch club, int active);
+
+    // Club + active=1 조건으로 질문 조회
+    List<ClubQuestion> findByClubAndActive(Club club, Integer active);
 }

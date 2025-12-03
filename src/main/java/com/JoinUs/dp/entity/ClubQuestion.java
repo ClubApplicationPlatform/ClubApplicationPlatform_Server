@@ -1,60 +1,31 @@
 package com.JoinUs.dp.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Table(name = "CLUB_QUESTION")
+@Table(name = "club_question")
+@Getter
+@Setter
+@NoArgsConstructor
 public class ClubQuestion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long qid;  // id → qid
+    private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "club_id", referencedColumnName = "club_id")
-    private ClubSearch club;
+    /** Club 기반으로 재설계 */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "club_id", nullable = false)
+    private Club club;
 
-
+    @Column(nullable = false, length = 1000)
     private String question;
-    private String answer;
-    private int active; // 1 = 활성, 0 = 삭제
 
-    // Getter / Setter
-    public Long getQid() { return qid; }
-    public void setQid(Long qid) { this.qid = qid; }
+    private Integer maxLength;
 
-    public ClubSearch getClub() {
-        return club;
-    }
-    public void setClub(ClubSearch club) {
-        this.club = club;
-    }
-
-    public String getQuestion() {
-        return question;
-    }
-    public void setQuestion(String question) {
-        this.question = question;
-    }
-
-    public String getAnswer() {
-        return answer;
-    }
-    public void setAnswer(String answer) {
-        this.answer = answer;
-    }
-
-    public int getActive() {
-        return active;
-    }
-    public void setActive(int active) {
-        this.active = active;
-    }
+    /** Soft delete flag */
+    private Integer active;
 }
-

@@ -1,12 +1,11 @@
 package com.JoinUs.dp.controller;
 
-import com.JoinUs.dp.dto.ClubCreateRequest;
 import com.JoinUs.dp.dto.ClubDetailResponse;
 import com.JoinUs.dp.dto.ClubListResponse;
+import com.JoinUs.dp.dto.RecruitUpdateRequest;
 import com.JoinUs.dp.service.ClubService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,68 +18,39 @@ public class ClubController {
 
     private final ClubService clubService;
 
-    // =====================================
-    // 1. 동아리 생성
-    // =====================================
-    @PostMapping
-    public ResponseEntity<Long> createClub(@RequestBody ClubCreateRequest request) {
-        Long id = clubService.createClub(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(id);
-    }
-
-    // =====================================
-    // 2. 단일 동아리 상세 조회
-    // =====================================
-    @GetMapping("/{clubId}")
-    public ResponseEntity<ClubDetailResponse> getClub(@PathVariable Long clubId) {
-        return ResponseEntity.ok(clubService.getClubDetail(clubId));
-    }
-
-    // =====================================
-    // 3. 동아리 목록 조회 (프론트 요구 구조)
-    // =====================================
+    /** 전체 조회 (프론트에서 쓰는 형태로) */
     @GetMapping
-    public ResponseEntity<List<ClubListResponse>> getClubs(
-            @RequestParam(required = false) String type,
-            @RequestParam(required = false) String category,
-            @RequestParam(required = false) String department
-    ) {
-        List<ClubListResponse> result;
-
-        if (type != null && category != null) {
-            result = clubService.findByTypeAndCategory(type, category);
-        } else if (type != null && department != null) {
-            result = clubService.findByDepartment(department);
-        } else if (type != null) {
-            result = clubService.findByType(type);
-        } else {
-            result = clubService.findAllClubs();
-        }
-
-        return ResponseEntity.ok(result);
+    public ResponseEntity<List<ClubListResponse>> findAll() {
+        return ResponseEntity.ok(clubService.findAllClubs());
     }
 
-    // =====================================
-    // 4. 이미지 업로드 (multipart)
-    // =====================================
+    /**
+     * 단일 조회
+     * - 기존 ClubDetailResponse 대신
+     * - 리스트와 동일한 구조인 ClubListResponse로 반환
+     */
+    @GetMapping("/{clubId}")
+    public ResponseEntity<ClubListResponse> findOne(@PathVariable Long clubId) {
+        return ResponseEntity.ok(clubService.getClubFull(clubId));
+    }
+
+    /** 대표 이미지 업로드 (파일 형태로 업로드) */
     @PostMapping("/{clubId}/image")
     public ResponseEntity<Long> uploadImage(
             @PathVariable Long clubId,
-            @RequestParam MultipartFile file
-    ) {
-        Long imageId = clubService.uploadClubImage(clubId, file);
-        return ResponseEntity.ok(imageId);
+            @RequestParam MultipartFile file) {
+
+        Long id = clubService.uploadClubImage(clubId, file);
+        return ResponseEntity.ok(id);
     }
 
-    // =====================================
-    // 5. 모집 상태 + 마감일 통합 변경 API
-    // =====================================
+    /** 모집 상태 + 마감일 변경 (통합 API) */
     @PatchMapping("/{clubId}/recruitment")
     public ResponseEntity<Void> updateRecruitment(
             @PathVariable Long clubId,
-            @RequestBody com.JoinUs.dp.dto.RecruitUpdateRequest request
-    ) {
-        clubService.updateRecruitment(clubId, request.getIsRecruiting(), request.getRecruitDeadline());
+            @RequestBody RecruitUpdateRequest req) {
+
+        clubService.updateRecruitment(clubId, req.getIsRecruiting(), req.getRecruitDeadline());
         return ResponseEntity.ok().build();
     }
 }

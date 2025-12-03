@@ -9,6 +9,7 @@ import com.JoinUs.dp.entity.Club;
 import com.JoinUs.dp.entity.ClubStatus;
 import com.JoinUs.dp.repository.ApplicationRepository;
 import com.JoinUs.dp.repository.ClubRepository;
+import com.JoinUs.dp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,10 +24,24 @@ public class ApplicationService {
 
     private final ApplicationRepository repository;
     private final ClubRepository clubRepository;
+    private final UserRepository userRepository;
 
     /* 1. 신청 생성 */
     @Transactional
     public ApplicationDto apply(ApplicationDto dto) {
+
+        if (dto.getUserId() == null || dto.getClubId() == null) {
+            throw new BadRequestException("userId와 clubId는 필수값입니다.");
+        }
+
+        // 유저/클럽 존재 여부 검증
+        if (!userRepository.existsById(dto.getUserId())) {
+            throw new NotFoundException("해당 유저를 찾을 수 없습니다. userId=" + dto.getUserId());
+        }
+        if (!clubRepository.existsById(dto.getClubId())) {
+            throw new NotFoundException("해당 클럽을 찾을 수 없습니다. clubId=" + dto.getClubId());
+        }
+
         Application e = toEntity(dto);
         e.setStatus(ClubStatus.PENDING);
         return toDto(repository.save(e));
@@ -43,6 +58,11 @@ public class ApplicationService {
     /* 3. userId로 조회 (마이페이지용) */
     @Transactional(readOnly = true)
     public List<ApplicationDto> findByUserId(Long userId) {
+
+        if (!userRepository.existsById(userId)) {
+            throw new NotFoundException("해당 유저를 찾을 수 없습니다. userId=" + userId);
+        }
+
         return repository.findByUserId(userId).stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
@@ -88,7 +108,11 @@ public class ApplicationService {
         }
         if (updates.containsKey("status")) {
             String status = (String) updates.get("status");
-            e.setStatus(ClubStatus.valueOf(status));
+            try {
+                e.setStatus(ClubStatus.valueOf(status));
+            } catch (IllegalArgumentException ex) {
+                throw new BadRequestException("status 값이 올바르지 않습니다. 허용 값: " + java.util.Arrays.toString(ClubStatus.values()));
+            }
         }
 
         return toDto(repository.save(e));
@@ -97,6 +121,11 @@ public class ApplicationService {
     /* 8. 클럽별 신청 목록 조회 */
     @Transactional(readOnly = true)
     public List<ApplicationDto> findByClubId(Long clubId) {
+
+        if (!clubRepository.existsById(clubId)) {
+            throw new NotFoundException("해당 클럽을 찾을 수 없습니다. clubId=" + clubId);
+        }
+
         return repository.findByClubId(clubId).stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
@@ -109,7 +138,7 @@ public class ApplicationService {
                 .orElseThrow(() -> new NotFoundException("신청을 찾을 수 없습니다. id=" + id));
 
         if ("passed".equalsIgnoreCase(result)) {
-            e.setStatus(ClubStatus.PASSED);   // ✅ enum에 있는 값만 사용
+            e.setStatus(ClubStatus.PASSED);
         } else if ("failed".equalsIgnoreCase(result)) {
             e.setStatus(ClubStatus.FAILED);
         } else {
@@ -142,14 +171,13 @@ public class ApplicationService {
         Application e = repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("신청을 찾을 수 없습니다. id=" + id));
 
-        e.setStatus(ClubStatus.PASSED);   // ✅ ADDITIONAL_PASSED 대신 PASSED로 통일
+        e.setStatus(ClubStatus.PASSED);
         return toDto(repository.save(e));
     }
 
     /* 12. 학과별 클럽 목록 */
     @Transactional(readOnly = true)
     public List<ClubSummary> getClubsByDepartment(String departmentId) {
-        // departmentId를 그대로 department로 사용
         List<Club> clubs = clubRepository.findByDepartment(departmentId);
         return clubs.stream()
                 .map(c -> new ClubSummary(c.getClubId(), c.getName()))
