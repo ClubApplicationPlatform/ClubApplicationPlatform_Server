@@ -9,7 +9,8 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
-    database-platform: org.hibernate.dialect.MySQLDialect
+    # Spring Boot 3 + Hibernate 6에서는 dialect 자동 감지됨
+    # database-platform: org.hibernate.dialect.MySQLDialect  ❌ 제거
 
 jwt:
   secret: "abc123123abc123"
@@ -24,10 +25,10 @@ spring:
       on-profile: dev
 
   datasource:
-    url: "jdbc:mysql://localhost:3306/club?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8"
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: "jdbc:mysql://localhost:3306/club?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8"
     username: "root"
     password: "@Ab86256653#"
-    driver-class-name: com.mysql.cj.jdbc.Driver
 
 jwt:
   secret: "local-dev-key"
@@ -70,12 +71,12 @@ spring:
     password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
-jpa:
-  hibernate:
-    ddl-auto: update
-  properties:
+  jpa:
     hibernate:
-      dialect: org.hibernate.dialect.PostgreSQLDialect
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 
 jwt:
   secret: ${JWT_SECRET}

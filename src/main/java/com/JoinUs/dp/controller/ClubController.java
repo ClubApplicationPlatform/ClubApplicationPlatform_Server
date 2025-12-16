@@ -3,6 +3,7 @@ package com.JoinUs.dp.controller;
 import com.JoinUs.dp.dto.ClubDetailResponse;
 import com.JoinUs.dp.dto.ClubListResponse;
 import com.JoinUs.dp.dto.RecruitUpdateRequest;
+import com.JoinUs.dp.dto.ClubCreateRequest;
 import com.JoinUs.dp.service.ClubService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
@@ -22,6 +23,12 @@ public class ClubController {
     @GetMapping
     public ResponseEntity<List<ClubListResponse>> findAll() {
         return ResponseEntity.ok(clubService.findAllClubs());
+    }
+
+    @PostMapping
+    public ResponseEntity<ClubListResponse> create(@RequestBody ClubCreateRequest req) {
+        ClubListResponse club = clubService.createClub(req);
+        return ResponseEntity.ok(club);
     }
 
     /**

@@ -8,6 +8,5 @@ import java.util.List;
 
 public interface ClubQuestionRepository extends JpaRepository<ClubQuestion, Long> {
 
-    // Club + active=1 조건으로 질문 조회
-    List<ClubQuestion> findByClubAndActive(Club club, Integer active);
+    List<ClubQuestion> findByClubAndActive(Club club, int active);
 }
