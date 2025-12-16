@@ -1,19 +1,19 @@
 package com.JoinUs.dp.controller;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.JoinUs.dp.common.exception.NotFoundException;
-import com.JoinUs.dp.dto.AnswerUpdateRequest;
 import com.JoinUs.dp.dto.QuestionCreateRequest;
+import com.JoinUs.dp.dto.QuestionUpdateRequest;
+import com.JoinUs.dp.entity.Club;
 import com.JoinUs.dp.entity.ClubQuestion;
-import com.JoinUs.dp.entity.ClubSearch;
-import com.JoinUs.dp.repository.ClubSearchRepository;
+import com.JoinUs.dp.repository.ClubRepository;
 import com.JoinUs.dp.service.ClubQuestionService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/clubs/{clubId}/questions")
@@ -21,53 +21,73 @@ import org.springframework.web.bind.annotation.*;
 public class ClubQuestionController {
 
     private final ClubQuestionService clubQuestionService;
-    private final ClubSearchRepository clubSearchRepository;
+    private final ClubRepository clubRepository;
 
-    /** 지원 질문 목록 조회
-     *  → 클럽이 설정한 질문 리스트 + (임시) 최대 글자 수
-     */
+    /** 동아리 지원 질문 목록 조회 */
     @GetMapping
     public List<QuestionResponse> getQuestions(@PathVariable Long clubId) {
-        ClubSearch club = clubSearchRepository.findById(clubId)
-                .orElseThrow(() -> new NotFoundException("해당 clubId는 존재하지 않습니다."));
+
+        Club club = clubRepository.findById(clubId)
+                .orElseThrow(() -> new NotFoundException("해당 clubId는 존재하지 않습니다. clubId=" + clubId));
 
         List<ClubQuestion> questions = clubQuestionService.getQuestionsByClub(club);
 
-        // maxLength는 아직 DB에 없어서 일단 1000자로 고정 (필요하면 엔티티/컬럼 추가해서 변경)
         return questions.stream()
                 .map(q -> new QuestionResponse(
-                        q.getQid(),
+                        q.getId(),
                         q.getQuestion(),
-                        1000
+                        q.getMaxLength() != null ? q.getMaxLength() : 1000
                 ))
                 .collect(Collectors.toList());
     }
 
-    /** 질문 추가 (관리자/동아리장용) */
+    /** 질문 추가 */
     @PostMapping
     public QuestionResponse addQuestion(
             @PathVariable Long clubId,
             @RequestBody QuestionCreateRequest req
     ) {
-        ClubSearch club = clubSearchRepository.findById(clubId)
-                .orElseThrow(() -> new NotFoundException("해당 clubId는 존재하지 않습니다."));
+        Club club = clubRepository.findById(clubId)
+                .orElseThrow(() -> new NotFoundException("해당 clubId는 존재하지 않습니다. clubId=" + clubId));
 
-        ClubQuestion saved = clubQuestionService.addQuestion(club, req.getQuestion());
-        return new QuestionResponse(saved.getQid(), saved.getQuestion(), 1000);
+        ClubQuestion saved = clubQuestionService.addQuestion(
+                club,
+                req.getQuestion(),
+                req.getMaxLength()
+        );
+
+        return new QuestionResponse(saved.getId(), saved.getQuestion(), saved.getMaxLength());
     }
 
-    /** 답변 등록/수정 – 지금 구조상 Q&A 성격이라 남겨둠 */
-    @PutMapping("/{questionId}/answer")
-    public ClubQuestion updateAnswer(
+    /** 질문 수정 */
+    @PutMapping("/{questionId}")
+    public QuestionResponse updateQuestion(
+            @PathVariable Long clubId,
             @PathVariable Long questionId,
-            @RequestBody AnswerUpdateRequest req
+            @RequestBody QuestionUpdateRequest req
     ) {
-        return clubQuestionService.updateAnswer(questionId, req.getAnswer());
+
+        if (!clubRepository.existsById(clubId)) {
+            throw new NotFoundException("해당 clubId는 존재하지 않습니다. clubId=" + clubId);
+        }
+
+        ClubQuestion updated = clubQuestionService.updateQuestion(
+                questionId,
+                req.getQuestion(),
+                req.getMaxLength()
+        );
+
+        return new QuestionResponse(updated.getId(), updated.getQuestion(), updated.getMaxLength());
     }
 
-    /** 질문 소프트 삭제 */
+    /** 질문 삭제(soft) */
     @DeleteMapping("/{questionId}")
-    public void softDeleteQuestion(@PathVariable Long questionId) {
+    public void softDelete(@PathVariable Long clubId, @PathVariable Long questionId) {
+
+        if (!clubRepository.existsById(clubId)) {
+            throw new NotFoundException("해당 clubId는 존재하지 않습니다. clubId=" + clubId);
+        }
+
         clubQuestionService.softDeleteQuestion(questionId);
     }
 

@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class QuestionCreateRequest {
+public class QuestionUpdateRequest {
     private String question;
     private Integer maxLength;
 }

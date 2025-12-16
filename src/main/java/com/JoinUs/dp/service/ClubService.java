@@ -38,37 +38,56 @@ public class ClubService {
 
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    // 1. 동아리 생성
-    public Long createClub(ClubCreateRequest req) {
+        // 1. Create club
+    public ClubListResponse createClub(ClubCreateRequest req) {
 
-        if (req.getName() == null || req.getShortDesc() == null ||
+        if (req.getName() == null || req.getShortDescription() == null ||
                 req.getType() == null || req.getLeaderId() == null) {
-            throw new BadRequestException("name, shortDesc, type, leaderId 는 필수값입니다.");
+            throw new BadRequestException("name, shortDescription, type, leaderId are required.");
         }
 
         Club club = new Club();
         club.setName(req.getName());
-        club.setShortDesc(req.getShortDesc());
+        club.setShortDesc(req.getShortDescription());
         club.setDescription(req.getDescription());
         club.setType(req.getType());
         club.setDepartment(req.getDepartment());
         club.setCategory(req.getCategory());
         club.setLeaderId(req.getLeaderId());
 
-        // 기본값
+        if (req.getActivities() != null && !req.getActivities().isEmpty()) {
+            String joined = req.getActivities().stream()
+                    .map(String::trim)
+                    .filter(s -> !s.isEmpty())
+                    .collect(java.util.stream.Collectors.joining("\n"));
+            club.setActivities(joined);
+        }
+        club.setVision(req.getDirection());
+
+        // default status and recruitment fields
         club.setStatus("pending");
         club.setRecruitStatus("closed");
         club.setRecruiting(false);
-        club.setMemberCount(0);
-        club.setActivities(null);
-        club.setVision(null);
+        club.setMemberCount(req.getMembers() == null ? 0 : req.getMembers());
         club.setRecruitmentNotice(null);
 
+        if (Boolean.TRUE.equals(req.getIsRecruiting())) {
+            club.setRecruitStatus("open");
+            club.setRecruiting(true);
+            if (club.getRecruitmentStartDate() == null) {
+                club.setRecruitmentStartDate(java.sql.Date.valueOf(java.time.LocalDate.now()));
+            }
+        }
+        if (req.getRecruitDeadline() != null && !req.getRecruitDeadline().isBlank()) {
+            java.time.LocalDate end = java.time.LocalDate.parse(req.getRecruitDeadline(), DATE_FMT);
+            club.setRecruitmentEndDate(java.sql.Date.valueOf(end));
+        }
+
         Club saved = clubRepository.save(club);
-        return saved.getClubId();
+        return toListResponse(saved);
     }
 
-    // 2. 단일 동아리 상세 조회
+// 2. 단일 동아리 상세 조회 (기존 버전 - 필요하면 다른 곳에서 사용)
     public ClubDetailResponse getClubDetail(Long id) {
         Club club = clubRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("해당 clubId는 존재하지 않습니다."));
@@ -89,6 +108,16 @@ public class ClubService {
                 club.getRecruitStatus(),
                 images
         );
+    }
+
+    /**
+     * 2-1. 단일 동아리 상세 조회 (프론트용 구조 - ClubListResponse로 통일)
+     * - GET /api/clubs/{clubId} 에서 사용하는 메서드
+     */
+    public ClubListResponse getClubFull(Long id) {
+        Club club = clubRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("해당 clubId는 존재하지 않습니다."));
+        return toListResponse(club);
     }
 
     // 3. 전체 목록 조회 (프론트용 구조)
@@ -230,7 +259,6 @@ public class ClubService {
         String id = "sg" + String.format("%02d", club.getClubId());
 
         // 2) adminId: 지금은 임시로 고정 값
-        //    나중에 Users 테이블에서 leaderId 기반 username/email 가져오고 싶으면 여기서 매핑
         String adminId = "sg_lead";
 
         // 3) imageUrl: 대표 이미지 1개
@@ -243,9 +271,9 @@ public class ClubService {
         List<String> activities = club.getActivities() == null
                 ? Collections.emptyList()
                 : Arrays.stream(club.getActivities().split("\n"))
-                        .map(String::trim)
-                        .filter(s -> !s.isEmpty())
-                        .collect(Collectors.toList());
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.toList());
 
         // 5) direction: Club.vision
         String direction = club.getVision();
