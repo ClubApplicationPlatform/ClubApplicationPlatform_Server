@@ -10,7 +10,6 @@ spring:
     hibernate:
       ddl-auto: update
     # Spring Boot 3 + Hibernate 6에서는 dialect 자동 감지됨
-    # database-platform: org.hibernate.dialect.MySQLDialect  ❌ 제거
 
 jwt:
   secret: "abc123123abc123"
